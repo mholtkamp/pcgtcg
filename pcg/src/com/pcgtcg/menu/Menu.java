@@ -53,4 +53,24 @@ public class Menu {
 		
 	}
 	
+	public void update()
+	{
+		optionsButton.update();
+		hostButton.update();
+		connectButton.update();
+		
+		if(optionsButton.isActive())
+		{
+			System.out.println("Options");
+		}
+		else if(hostButton.isActive())
+		{
+			System.out.println("Host");
+		}
+		else if(connectButton.isActive())
+		{
+			System.out.println("Connect");
+		}
+	}
+	
 }

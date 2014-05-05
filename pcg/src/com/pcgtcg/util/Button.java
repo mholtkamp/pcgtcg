@@ -123,4 +123,9 @@ public class Button {
 	{
 		this.tex = pcgtcg.manager.get(tex,Texture.class);
 	}
+	
+	public boolean isActive()
+	{
+		return active;
+	}
 }
