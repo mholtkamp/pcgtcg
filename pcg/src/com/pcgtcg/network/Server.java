@@ -1,0 +1,38 @@
+package com.pcgtcg.network;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net.Protocol;
+import com.badlogic.gdx.net.ServerSocket;
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.Socket;
+
+public class Server extends NetworkManager implements Runnable{
+
+	private ServerSocket serverSocket;
+	private ServerSocketHints serverSocketHint;
+	
+	private Socket socket;
+	
+	public Server()
+	{
+		super();
+	}
+	
+	public void run()
+	{
+		System.out.println("Server running");
+		serverSocketHint = new ServerSocketHints();
+		serverSocketHint.acceptTimeout = 0;
+		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 5151, serverSocketHint);
+		socket = serverSocket.accept(null);
+		
+		connected = true;
+		
+		
+ 
+	}
+	
+}

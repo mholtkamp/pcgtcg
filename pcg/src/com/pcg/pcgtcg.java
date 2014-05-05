@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.pcgtcg.game.Game;
 import com.pcgtcg.menu.Menu;
 
 public class pcgtcg implements ApplicationListener {
@@ -27,10 +28,11 @@ public class pcgtcg implements ApplicationListener {
 	
 	//Private Objects
 	private SpriteBatch batch;
-	private Menu menu;
+	private static Menu menu;
+	public static Game game;
 	
 	//State
-	public int gameState;
+	public static int gameState;
 	
 	
 	

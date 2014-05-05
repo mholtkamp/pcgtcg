@@ -3,6 +3,7 @@ package com.pcgtcg.menu;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.pcg.pcgtcg;
+import com.pcgtcg.game.Game;
 import com.pcgtcg.util.Button;
 
 public class Menu {
@@ -38,38 +39,64 @@ public class Menu {
 	
 	public void render(SpriteBatch batch)
 	{
-		optionsButton.render(batch);
-		hostButton.render(batch);
-		connectButton.render(batch);
 		
-		font.setScale(4f,3f);
-		font.setColor(1f,0.1f,0.1f,1f);
-		font.draw(batch, "PCG", 80, 430);
-		font.setColor(0f,0f,0f,1f);
-		font.draw(batch, "the", 180, 370);
-		font.setColor(1f,0.1f,0.1f,1f);
-		font.draw(batch, "TCG", 280, 310);
+		if(menuState == MAIN_STATE)
+		{
+			optionsButton.render(batch);
+			hostButton.render(batch);
+			connectButton.render(batch);
+				
+			font.setScale(4f,3f);
+			font.setColor(1f,0.1f,0.1f,1f);
+			font.draw(batch, "PCG", 80, 430);
+			font.setColor(0f,0f,0f,1f);
+			font.draw(batch, "the", 180, 370);
+			font.setColor(1f,0.1f,0.1f,1f);
+			font.draw(batch, "TCG", 280, 310);
+		}
+		else if(menuState == HOST_STATE)
+		{
+			font.setScale(2f);
+			font.setColor(0f,0f,0f,1f);
+			font.draw(batch, "Waiting for connection...", 100, 400);
+		}
 		
 		
 	}
 	
 	public void update()
 	{
-		optionsButton.update();
-		hostButton.update();
-		connectButton.update();
-		
-		if(optionsButton.isActive())
+		if(menuState == MAIN_STATE)
 		{
-			System.out.println("Options");
+			optionsButton.update();
+			hostButton.update();
+			connectButton.update();
+			
+			if(optionsButton.isActive())
+			{
+				optionsButton.clear();
+			}
+			else if(hostButton.isActive())
+			{
+				menuState = HOST_STATE;
+				pcgtcg.game = new Game(true);
+				hostButton.clear();
+			}
+			else if(connectButton.isActive())
+			{
+				menuState = CONNECT_STATE;
+				pcgtcg.game = new Game(false);
+				connectButton.clear();
+			}
 		}
-		else if(hostButton.isActive())
+		else if(menuState == HOST_STATE)
 		{
-			System.out.println("Host");
-		}
-		else if(connectButton.isActive())
-		{
-			System.out.println("Connect");
+			if(pcgtcg.game.netman.isConnected())
+			{
+				menuState = MAIN_STATE;
+				System.out.println("Client has connected!");
+				pcgtcg.gameState = pcgtcg.GAME_STATE;
+			}
 		}
 	}
 	

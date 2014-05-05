@@ -1,0 +1,67 @@
+package com.pcgtcg.network;
+
+import java.io.BufferedReader;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.Socket;
+
+
+
+public class NetworkManager implements Runnable{
+	
+	protected boolean connected;
+	protected BufferedReader buffer;
+	protected Socket socket;
+
+	
+	public NetworkManager()
+	{
+		connected = false;
+		List<String> addresses = new ArrayList<String>();
+        
+		// BEGIN code borrowed from http://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
+		try
+        {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            for(NetworkInterface ni : Collections.list(interfaces)){
+                for(InetAddress address : Collections.list(ni.getInetAddresses()))
+                {
+                    if(address instanceof Inet4Address){
+                        addresses.add(address.getHostAddress());
+                    }
+                }
+            }
+        } 
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
+		
+        String ipAddress = new String("");
+        for(String str:addresses)
+        {
+            ipAddress = ipAddress + str + "\n";
+        }
+        //END borrowed Code
+        
+        System.out.println(ipAddress);
+	}
+	
+	public boolean isConnected()
+	{
+		return connected;
+	}
+	
+	public void run()
+	{
+		System.out.println("Wrong run called");
+	}
+
+}
