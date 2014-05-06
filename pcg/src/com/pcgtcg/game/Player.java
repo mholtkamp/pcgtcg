@@ -2,12 +2,19 @@ package com.pcgtcg.game;
 
 public class Player {
 
-	private String name;
-	private Deck deck;
-	private int life;
+	public String name;
+	public Deck deck;
+	public int life;
 	
 	public Player()
 	{
-		
+		life = 40;
+		deck = new Deck();
+	}
+	
+	public Player(String name)
+	{
+		this();
+		this.name = name;
 	}
 }

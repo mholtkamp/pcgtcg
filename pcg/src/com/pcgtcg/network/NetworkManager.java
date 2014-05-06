@@ -1,6 +1,7 @@
 package com.pcgtcg.network;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -50,7 +51,7 @@ public class NetworkManager implements Runnable{
             ipAddress = ipAddress + str + "\n";
         }
         //END borrowed Code
-        
+
         System.out.println(ipAddress);
 	}
 	
@@ -64,4 +65,34 @@ public class NetworkManager implements Runnable{
 		System.out.println("Wrong run called");
 	}
 
+	public void send(String str)
+	{
+		str += "\n";
+		try
+		{
+			socket.getOutputStream().write(str.getBytes());
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+		}
+		
+	}
+	
+	public void poll()
+	{
+		try
+		{
+			if(buffer.ready())
+			{
+				String sig = buffer.readLine();
+				System.out.println(sig);
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+		}
+		
+	}
 }

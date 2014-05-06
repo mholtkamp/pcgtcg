@@ -87,6 +87,8 @@ public class pcgtcg implements ApplicationListener {
 		
 		if(gameState == MENU_STATE)
 			menu.update();
+		else if(gameState == GAME_STATE)
+			game.update();
 	}
 	
 	public void render()
@@ -98,6 +100,8 @@ public class pcgtcg implements ApplicationListener {
 		
 		if(gameState == MENU_STATE)
 			menu.render(batch);
+		else if(gameState == GAME_STATE)
+			game.render(batch);
 		
 		batch.end();
 	}

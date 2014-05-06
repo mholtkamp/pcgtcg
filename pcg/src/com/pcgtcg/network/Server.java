@@ -14,7 +14,6 @@ public class Server extends NetworkManager implements Runnable{
 	private ServerSocket serverSocket;
 	private ServerSocketHints serverSocketHint;
 	
-	private Socket socket;
 	
 	public Server()
 	{
@@ -30,7 +29,12 @@ public class Server extends NetworkManager implements Runnable{
 		socket = serverSocket.accept(null);
 		
 		connected = true;
+        buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
 		
+		while(true)
+		{
+			
+		}
 		
  
 	}

@@ -79,12 +79,14 @@ public class Menu {
 			else if(hostButton.isActive())
 			{
 				menuState = HOST_STATE;
+				System.out.println("Server Game created.");
 				pcgtcg.game = new Game(true);
 				hostButton.clear();
 			}
 			else if(connectButton.isActive())
 			{
 				menuState = CONNECT_STATE;
+				System.out.println("Client Game created.");
 				pcgtcg.game = new Game(false);
 				connectButton.clear();
 			}
@@ -95,6 +97,15 @@ public class Menu {
 			{
 				menuState = MAIN_STATE;
 				System.out.println("Client has connected!");
+				pcgtcg.gameState = pcgtcg.GAME_STATE;
+			}
+		}
+		else if(menuState == CONNECT_STATE)
+		{
+			if(pcgtcg.game.netman.isConnected())
+			{
+				menuState = MAIN_STATE;
+				System.out.println("Connected to Server!");
 				pcgtcg.gameState = pcgtcg.GAME_STATE;
 			}
 		}
