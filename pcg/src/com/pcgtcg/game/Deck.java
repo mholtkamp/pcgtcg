@@ -94,6 +94,64 @@ public class Deck {
 		
 	}
 	
+	public void add(char c)
+	{
+		switch(c)
+		{
+			case '2': 
+				allCards.add(new C2());
+				curCards.add(new C2());
+				break;
+			case '3': 
+				allCards.add(new C3());
+				curCards.add(new C3());
+				break;
+			case '4': 
+				allCards.add(new C4());
+				curCards.add(new C4());
+				break;
+			case '5': 
+				allCards.add(new C5());
+				curCards.add(new C5());
+				break;
+			case '6': 
+				allCards.add(new C6());
+				curCards.add(new C6());
+				break;
+			case '7': 
+				allCards.add(new C7());
+				curCards.add(new C7());
+				break;
+			case '8': 
+				allCards.add(new C8());
+				curCards.add(new C8());
+				break;
+			case '9': 
+				allCards.add(new C9());
+				curCards.add(new C9());
+				break;
+			case 'T': 
+				allCards.add(new CT());
+				curCards.add(new CT());
+				break;
+			case 'J': 
+				allCards.add(new CJ());
+				curCards.add(new CJ());
+				break;
+			case 'Q': 
+				allCards.add(new CQ());
+				curCards.add(new CQ());
+				break;
+			case 'K': 
+				allCards.add(new CK());
+				curCards.add(new CK());
+				break;
+			case 'A': 
+				allCards.add(new CA());
+				curCards.add(new CA());
+				break;
+		}
+	}
 	public int getSize()
 	{
 		return allCards.size();

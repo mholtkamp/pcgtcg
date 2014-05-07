@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
+import com.pcg.pcgtcg;
 
 
 
@@ -84,7 +85,50 @@ public class NetworkManager implements Runnable{
 		try
 		{
 			if(buffer.ready())
-				System.out.println(buffer.readLine());
+			{
+				String sig = buffer.readLine();
+				String com = sig.split("[.]", 2)[0];
+				String params;
+				try
+				{
+					params = sig.split("[.]",2)[1];
+				}
+				catch(ArrayIndexOutOfBoundsException ex)
+				{
+					params = "none";
+				}
+				
+				
+				//BEGIN Debug
+				System.out.println("Command: " + com);
+				System.out.println("Params: " + params);
+				// END Debug
+				
+				if(com.equals("DECKONE"))
+				{
+					pcgtcg.game.exeDECKONE(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("DECKTWO"))
+				{
+					pcgtcg.game.exeDECKTWO(params.replaceAll("[.]", ""));				
+				}
+				else if(com.equals("DRAW"))
+				{
+					pcgtcg.game.exeDRAW();
+				}
+				else if(com.equals("FDRAW"))
+				{
+					pcgtcg.game.exeFDRAW();
+				}
+				else if(com.equals("ENDTURN"))
+				{
+					pcgtcg.game.exeENDTURN();
+				}
+				
+			
+				
+				
+			}
 		}
 		catch(Exception ex)
 		{

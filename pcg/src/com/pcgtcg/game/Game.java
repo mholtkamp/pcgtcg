@@ -126,6 +126,11 @@ public class Game {
 		}
 		else if(inGameState == DRAW_STATE)
 		{
+			draw();
+			inGameState = PLAY_STATE;
+		}
+		else if(inGameState == PLAY_STATE)
+		{
 			
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
@@ -164,5 +169,46 @@ public class Game {
 	{
 		inGameState = ACCEPT_STATE;
 		netman.send("ENDTURN");
+	}
+	
+	//*************************************************
+	//*************     NET ACTIONS     ***************
+	//*************************************************
+	
+	public void exeDECKONE(String params)
+	{
+		for(int i = 0; i < params.length(); i++)
+			eplayer.deck.add(params.charAt(i));
+	}
+	
+	public void exeDECKTWO(String params)
+	{
+		for(int i = 0; i < params.length(); i++)
+			player.deck.add(params.charAt(i));
+	}
+	
+	public void exeDRAW()
+	{
+		ehand.add(eplayer.deck.curCards.removeFirst());
+	}
+	
+	public void exeFDRAW()
+	{
+		hand.add(player.deck.curCards.removeFirst());
+	}
+	
+	public void exeENDTURN()
+	{
+		inGameState = DRAW_STATE;
+	}
+	
+	//The FIRSTTURN signal might actually be completely useless.
+	public void exeFIRSTTURN(String param)
+	{
+		firstTurn = Integer.parseInt(param);
+		if(firstTurn == 1)
+			turnState = ONE_STATE;
+		else
+			turnState = TWO_STATE;
 	}
 }
