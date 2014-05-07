@@ -76,7 +76,7 @@ public class pcgtcg implements ApplicationListener {
 		manager.load("data/cardKTex.png",Texture.class);
 		manager.load("data/cardATex.png",Texture.class);
 		manager.load("data/cardXTex.png",Texture.class);
-
+		manager.load("data/cardBackTex.png",Texture.class);
 		manager.update();
 		manager.finishLoading();
 		

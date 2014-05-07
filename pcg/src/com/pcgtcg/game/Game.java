@@ -21,8 +21,8 @@ public class Game {
 	
 	private Player player;
 	private Player eplayer;
-	private LinkedList<Card> hand;
-	private LinkedList<Card> ehand;
+	private Hand hand;
+	private Hand ehand;
 	private LinkedList<Card> field;
 	private LinkedList<Card> efield;
 	private LinkedList<Card> grave;
@@ -36,8 +36,8 @@ public class Game {
 	{
 		player = new Player();
 		eplayer = new Player();
-		hand = new LinkedList<Card>();
-		ehand = new LinkedList<Card>();
+		hand = new Hand(true);
+		ehand = new Hand(false);
 		field = new LinkedList<Card>();
 		efield = new LinkedList<Card>();
 		grave = new LinkedList<Card>();
@@ -100,6 +100,10 @@ public class Game {
 				draw();
 				draw();
 				draw();
+				fdraw();
+				fdraw();
+				fdraw();
+				fdraw();
 				inGameState = DRAW_STATE;
 			}
 			else
@@ -108,6 +112,9 @@ public class Game {
 				draw();
 				draw();
 				draw();
+				fdraw();
+				fdraw();
+				fdraw();
 				end();
 			}
 			
@@ -132,7 +139,8 @@ public class Game {
 	
 	public void render(SpriteBatch batch)
 	{
-		
+		hand.render(batch);
+		ehand.render(batch);
 	}
 	
 	
@@ -144,7 +152,12 @@ public class Game {
 	{
 		hand.add(player.deck.curCards.removeFirst());
 		netman.send("DRAW");
-		
+	}
+	
+	public void fdraw()
+	{
+		ehand.add(eplayer.deck.curCards.removeFirst());
+		netman.send("FDRAW");
 	}
 	
 	public void end()

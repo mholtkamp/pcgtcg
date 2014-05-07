@@ -47,5 +47,18 @@ public abstract class Card {
 		return tributeValue;
 	}
 	
+	public void setBox(int x, int y, int width, int height)
+	{
+		box.x = x;
+		box.y = y;
+		box.width = width;
+		box.height = height;
+	}
+	
+	public Rectangle getBox()
+	{
+		return box;
+	}
+	
 
 }
