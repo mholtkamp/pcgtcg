@@ -11,8 +11,8 @@ public class Deck {
 	private String curStr;
 	private String allStr;
 	
-	private LinkedList<Card> curCards;
-	private LinkedList<Card> allCards;
+	public LinkedList<Card> curCards;
+	public LinkedList<Card> allCards;
 	
 	public Deck()
 	{
@@ -69,8 +69,8 @@ public class Deck {
 					curCards.add(new C9());
 					break;
 				case 10: 
-					allCards.add(new C10());
-					curCards.add(new C10());
+					allCards.add(new CT());
+					curCards.add(new CT());
 					break;
 				case 11: 
 					allCards.add(new CJ());
@@ -93,4 +93,20 @@ public class Deck {
 		System.out.println("Deck of size " + allCards.size() + " created!");
 		
 	}
+	
+	public int getSize()
+	{
+		return allCards.size();
+	}
+	
+	public int getCardsRemaining()
+	{
+		return curCards.size();
+	}
+	
+	public char getCardValue(int index)
+	{
+		return allCards.get(index).getValue();
+	}
+	
 }

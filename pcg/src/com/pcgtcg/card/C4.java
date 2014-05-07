@@ -9,6 +9,9 @@ public class C4 extends Card {
 	{
 		super();
 		tex = pcgtcg.manager.get("data/card4Tex.png", Texture.class);
+		value = '4';
+		power = 4;
+		tributeValue = 1;
 	}
 
 	public void activate()

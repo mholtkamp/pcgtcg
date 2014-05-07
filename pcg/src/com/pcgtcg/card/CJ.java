@@ -9,6 +9,9 @@ public class CJ extends Card {
 	{
 		super();
 		tex = pcgtcg.manager.get("data/cardJTex.png", Texture.class);
+		value = 'J';
+		power = 13;
+		tributeValue = 1;
 	}
 
 	public void activate()

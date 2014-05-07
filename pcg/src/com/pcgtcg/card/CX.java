@@ -9,6 +9,9 @@ public class CX extends Card {
 	{
 		super();
 		tex = pcgtcg.manager.get("data/cardXTex.png", Texture.class);
+		value = 'X';
+		power = 0;
+		tributeValue = 0;
 	}
 
 	public void activate()

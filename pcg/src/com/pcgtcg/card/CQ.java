@@ -9,6 +9,9 @@ public class CQ extends Card {
 	{
 		super();
 		tex = pcgtcg.manager.get("data/cardQTex.png", Texture.class);
+		value = 'Q';
+		power = 15;
+		tributeValue = 1;
 	}
 
 	public void activate()

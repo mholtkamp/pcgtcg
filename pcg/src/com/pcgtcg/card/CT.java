@@ -3,12 +3,15 @@ package com.pcgtcg.card;
 import com.badlogic.gdx.graphics.Texture;
 import com.pcg.pcgtcg;
 
-public class C10 extends Card {
+public class CT extends Card {
 	
-	public C10()
+	public CT()
 	{
 		super();
-		tex = pcgtcg.manager.get("data/card10Tex.png", Texture.class);
+		tex = pcgtcg.manager.get("data/cardTTex.png", Texture.class);
+		value = 'T';
+		power = 10;
+		tributeValue = 1;
 	}
 
 	public void activate()

@@ -84,15 +84,18 @@ public class NetworkManager implements Runnable{
 		try
 		{
 			if(buffer.ready())
-			{
-				String sig = buffer.readLine();
-				System.out.println(sig);
-			}
+				System.out.println(buffer.readLine());
 		}
 		catch(Exception ex)
 		{
 			System.out.println(ex);
 		}
+		
+	}
+	
+	public void close()
+	{
+		socket.dispose();
 		
 	}
 }

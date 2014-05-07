@@ -32,6 +32,20 @@ public abstract class Card {
 	public abstract void summon();
 	public abstract void activate();
 	
+	public char getValue()
+	{
+		return value;
+	}
+	
+	public int getPower()
+	{
+		return power;
+	}
+	
+	public int getTributeValue()
+	{
+		return tributeValue;
+	}
 	
 
 }

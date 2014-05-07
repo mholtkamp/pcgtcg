@@ -9,6 +9,9 @@ public class CK extends Card {
 	{
 		super();
 		tex = pcgtcg.manager.get("data/cardKTex.png", Texture.class);
+		value = 'K';
+		power = 17;
+		tributeValue = 1;
 	}
 
 	public void activate()
