@@ -59,7 +59,7 @@ public class HandSelector extends OptionSelector {
 				}
 				else
 				{
-					pcgtcg.game.tribSel = new TributeSelector(card);
+					pcgtcg.game.tribSel = new TributeSelector(card,true);
 					pcgtcg.game.inGameState = pcgtcg.game.TRIB_OPT_STATE;
 				}
 			}
@@ -76,6 +76,7 @@ public class HandSelector extends OptionSelector {
 				}
 				else
 				{
+					pcgtcg.game.tribSel = new TributeSelector(card,false);
 					pcgtcg.game.inGameState = pcgtcg.game.TRIB_OPT_STATE;
 				}
 			}

@@ -26,7 +26,10 @@ public class FieldSelector extends OptionSelector {
 		options.add(toggleOption);
 		options.add(cancelOption);
 		
-		if(card.hasAttacked())
+		if(pcgtcg.game.efield.getSize() == 0)
+			attackOption.setValid(true);
+		
+		if(card.hasAttacked() || pcgtcg.game.isFirstTurn)
 		{
 			attackOption.setValid(false);
 			toggleOption.setValid(false);
@@ -46,7 +49,17 @@ public class FieldSelector extends OptionSelector {
 			
 			if(attackOption.isTouched(tx, ty))
 			{
-				
+				if(pcgtcg.game.efield.getSize() == 0)
+				{
+					card.setHasAttacked(true);
+					pcgtcg.game.damage(card.getPower());
+					pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
+				}
+				else
+				{
+					pcgtcg.game.inGameState = pcgtcg.game.ATT_TARGET_STATE;
+					pcgtcg.game.attackSel = new AttackSelector(card);
+				}
 			}
 			else if(toggleOption.isTouched(tx, ty))
 			{

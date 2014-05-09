@@ -54,6 +54,7 @@ public class Option implements Touchable {
 		}
 		
 		font.setScale(1f);
+		font.setColor(0f,0f,0f,1f);
 		font.draw(batch, text, box.x + 12, box.y + box.height - 7);
 	}
 	

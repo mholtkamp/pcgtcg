@@ -112,6 +112,10 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeDECKTWO(params.replaceAll("[.]", ""));				
 				}
+				else if(com.equals("FIRSTTURN"))
+				{
+					pcgtcg.game.exeFIRSTTURN(params.replaceAll("[.]", ""));
+				}
 				else if(com.equals("DRAW"))
 				{
 					pcgtcg.game.exeDRAW();
@@ -132,6 +136,10 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeSET(params.replaceAll("[.]", ""));
 				}
+				else if(com.equals("KILL"))
+				{
+					pcgtcg.game.exeKILL(params.replaceAll("[.]", ""));
+				}
 				else if(com.equals("SKILL"))
 				{
 					pcgtcg.game.exeSKILL(params.replaceAll("[.]", ""));
@@ -139,6 +147,14 @@ public class NetworkManager implements Runnable{
 				else if(com.equals("TOGGLE"))
 				{
 					pcgtcg.game.exeTOGGLE(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("DAMAGE"))
+				{
+					pcgtcg.game.exeDAMAGE(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("SDAMAGE"))
+				{
+					pcgtcg.game.exeSDAMAGE(params.replaceAll("[.]", ""));
 				}
 			
 				

@@ -5,6 +5,8 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
@@ -12,6 +14,7 @@ import com.pcgtcg.card.Card;
 import com.pcgtcg.network.Client;
 import com.pcgtcg.network.NetworkManager;
 import com.pcgtcg.network.Server;
+import com.pcgtcg.util.AttackSelector;
 import com.pcgtcg.util.FieldSelector;
 import com.pcgtcg.util.HandSelector;
 import com.pcgtcg.util.Option;
@@ -21,10 +24,17 @@ public class Game {
 
 	public final int NULL_STATE = -1, INIT_STATE = 0, DRAW_STATE = 1, PLAY_STATE = 2, ACCEPT_STATE = 3; 
 	public final int HAND_OPT_STATE = 4, FIELD_OPT_STATE = 5, TRIB_OPT_STATE = 6, ATT_TARGET_STATE = 7;
+	public final int GAME_OVER_STATE = 8;
 	public final int ONE_STATE = 1, TWO_STATE = 2;
 	public int turnState;
 	public int inGameState;
 	private int testStatus;
+	public boolean hasWon;
+	public boolean gameOver;
+	public boolean isFirstTurn;
+	
+	public Texture blackTex;
+	public BitmapFont font;
 	
 	
 	//Player + Locations
@@ -42,6 +52,7 @@ public class Game {
 	public Option endOpt;
 	public TributeSelector tribSel;
 	public FieldSelector fieldSel;
+	public AttackSelector attackSel;
 	
 	public boolean hasSummoned;
 	public int playerNum;
@@ -59,8 +70,12 @@ public class Game {
 		grave = new LinkedList<Card>();
 		egrave = new LinkedList<Card>();
 		hasSummoned = false;
+		hasWon = false;
+		gameOver = false;
 		endOpt = new Option("End Turn",650,220);
 		endOpt.setValid(false);
+		blackTex = pcgtcg.manager.get("data/blackTex.png",Texture.class);
+		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		
 	}
 	
@@ -77,7 +92,10 @@ public class Game {
 			eplayer.deck.randomizeDeck();
 			Random rand = new Random();
 			if(rand.nextFloat() > 0.5)
+			{
 				firstTurn = 1;
+				isFirstTurn = true;
+			}
 			else
 				firstTurn = 2;
 			inGameState = INIT_STATE;
@@ -150,9 +168,16 @@ public class Game {
 			endOpt.setValid(true);
 			hasSummoned = false;
 			inGameState = PLAY_STATE;
+			
+			
+			System.out.println("isFirstTurn: " + isFirstTurn);
+			System.out.println("firstTurn: " + firstTurn);
 		}
 		else if(inGameState == PLAY_STATE)
 		{
+			if(gameOver)
+				inGameState = GAME_OVER_STATE;
+			
 			if(Gdx.input.justTouched())
 			{
 				Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
@@ -204,6 +229,10 @@ public class Game {
 		{
 			fieldSel.update();
 		}
+		else if(inGameState == ATT_TARGET_STATE)
+		{
+			attackSel.update();
+		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
 		{
@@ -226,6 +255,12 @@ public class Game {
 		//Render Options
 		endOpt.render(batch);
 		
+		//Render Text
+		font.setScale(1f);
+		font.setColor(0f, 0f, 1f, 1f);
+		font.draw(batch, ""+player.life, 100, 200);
+		font.setColor(1f,0f,0f,1f);
+		font.draw(batch, ""+eplayer.life, 100, 280);
 		if(inGameState == HAND_OPT_STATE)
 		{
 			handSel.render(batch);
@@ -237,6 +272,20 @@ public class Game {
 		else if(inGameState == FIELD_OPT_STATE)
 		{
 			fieldSel.render(batch);
+		}
+		else if(inGameState == ATT_TARGET_STATE)
+		{
+			attackSel.render(batch);
+		}
+		else if(inGameState == GAME_OVER_STATE)
+		{
+			batch.draw(blackTex, 0, 0, pcgtcg.SCREEN_WIDTH, pcgtcg.SCREEN_HEIGHT);
+			font.setScale(2f);
+			font.setColor(1f, 1f, 1f, 1f);
+			if(hasWon)
+				font.draw(batch, "You Win!", 300, 300);
+			else
+				font.draw(batch,"You Lose!",300,300);
 		}
 	}
 	
@@ -261,6 +310,7 @@ public class Game {
 	{
 		inGameState = ACCEPT_STATE;
 		endOpt.setValid(false);
+		isFirstTurn = false;
 		for(int i = 0; i < field.getSize(); i++)
 			field.getCard(i).setHasAttacked(false);
 		netman.send("ENDTURN");
@@ -279,7 +329,6 @@ public class Game {
 			}
 		}
 		hasSummoned = true;
-		c.setHasAttacked(true);
 		netman.send("SUMMON." + c.getValue());
 	}
 	
@@ -296,10 +345,14 @@ public class Game {
 			}
 		}
 		hasSummoned = true;
-		c.setHasAttacked(true);
 		netman.send("SET." + c.getValue());
 	}
 	
+	public void kill(int pos)
+	{
+		efield.remove(pos);
+		netman.send("KILL." + pos);
+	}
 	public void skill(int pos)
 	{
 			field.remove(pos);
@@ -313,7 +366,28 @@ public class Game {
 		netman.send("TOGGLE."+pos);
 		field.updatePosition();
 		
-		//Weird shit is happening on toggle. please fix this sober martin.
+	}
+	
+	public void damage(int amount)
+	{
+		eplayer.life -= amount;
+		if(eplayer.life <= 0)
+		{
+			hasWon = true;
+			gameOver = true;
+		}
+		netman.send("DAMAGE."+amount);
+	}
+	
+	public void sdamage(int amount)
+	{
+		player.life -= amount;
+		if(player.life <= 0)
+		{
+			hasWon = false;
+			gameOver = true;
+		}
+		netman.send("SDAMAGE."+amount);
 	}
 	//*************************************************
 	//*************     NET ACTIONS     ***************
@@ -350,10 +424,17 @@ public class Game {
 	public void exeFIRSTTURN(String param)
 	{
 		firstTurn = Integer.parseInt(param);
+		System.out.println("Parsed firstTurn: " + firstTurn);
 		if(firstTurn == 1)
+		{
 			turnState = ONE_STATE;
+			isFirstTurn = false;
+		}
 		else
+		{
 			turnState = TWO_STATE;
+			isFirstTurn = true;
+		}
 	}
 	
 	public void exeSUMMON(String param)
@@ -384,6 +465,12 @@ public class Game {
 		}
 	}
 	
+	public void exeKILL(String param)
+	{
+		int pos = Integer.parseInt(param);
+		field.remove(pos);
+	}
+	
 	public void exeSKILL(String param)
 	{
 		int pos = Integer.parseInt(param);
@@ -396,5 +483,29 @@ public class Game {
 		efield.getCard(pos).toggleAttackPosition();
 		efield.getCard(pos).setVisible(true);
 		efield.updatePosition();
+	}
+	
+	public void exeDAMAGE(String param)
+	{
+		int amount = Integer.parseInt(param);
+		player.life -= amount;
+		if(player.life <= 0)
+		{
+			hasWon = false;
+			gameOver = true;
+			inGameState = GAME_OVER_STATE;
+		}
+	}
+	
+	public void exeSDAMAGE(String param)
+	{
+		int amount = Integer.parseInt(param);
+		eplayer.life -= amount;
+		if(eplayer.life <= 0)
+		{
+			hasWon = true;
+			gameOver = true;
+			inGameState = GAME_OVER_STATE;
+		}
 	}
 }

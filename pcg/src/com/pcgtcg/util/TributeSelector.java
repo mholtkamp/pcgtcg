@@ -19,9 +19,10 @@ public class TributeSelector extends OptionSelector{
 	private Card card;
 	private LinkedList<Integer> markedPositions;
 	private Texture blueTex;
+	private boolean toSummon;
 
 	
-	public TributeSelector(Card card)
+	public TributeSelector(Card card, boolean toSummon)
 	{
 		super();
 		this.card = card;
@@ -36,6 +37,7 @@ public class TributeSelector extends OptionSelector{
 		tributeCount = 0;
 		
 		blueTex = pcgtcg.manager.get("data/blueTex.png",Texture.class);
+		this.toSummon = toSummon;
 	}
 	
 	public void update()
@@ -59,7 +61,10 @@ public class TributeSelector extends OptionSelector{
 					pcgtcg.game.skill(markedPositions.get(i));
 				}
 				
-				pcgtcg.game.summon(card);
+				if(toSummon)
+					pcgtcg.game.summon(card);
+				else
+					pcgtcg.game.set(card);
 				pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
 			}
 			else if(cancelOption.isTouched(tx, ty))
