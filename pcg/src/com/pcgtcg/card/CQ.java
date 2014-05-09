@@ -12,6 +12,7 @@ public class CQ extends Card {
 		value = 'Q';
 		power = 15;
 		tributeValue = 1;
+		tributeCost = 2;
 	}
 
 	public void activate()

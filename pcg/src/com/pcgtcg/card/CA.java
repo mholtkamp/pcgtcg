@@ -12,6 +12,7 @@ public class CA extends Card {
 		value = 'A';
 		power = 20;
 		tributeValue = 1;
+		tributeCost = 3;
 	}
 
 	public void activate()

@@ -12,6 +12,7 @@ public class C9 extends Card {
 		value = '9';
 		power = 9;
 		tributeValue = 1;
+		tributeCost = 1;
 	}
 
 	public void activate()

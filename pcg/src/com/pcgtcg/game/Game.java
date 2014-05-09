@@ -13,6 +13,8 @@ import com.pcgtcg.network.Client;
 import com.pcgtcg.network.NetworkManager;
 import com.pcgtcg.network.Server;
 import com.pcgtcg.util.HandSelector;
+import com.pcgtcg.util.Option;
+import com.pcgtcg.util.TributeSelector;
 
 public class Game {
 
@@ -36,6 +38,8 @@ public class Game {
 	
 	//Options
 	private HandSelector handSel;
+	public Option endOpt;
+	public TributeSelector tribSel;
 	
 	public boolean hasSummoned;
 	public int playerNum;
@@ -53,6 +57,8 @@ public class Game {
 		grave = new LinkedList<Card>();
 		egrave = new LinkedList<Card>();
 		hasSummoned = false;
+		endOpt = new Option("End Turn",650,220);
+		endOpt.setValid(false);
 		
 	}
 	
@@ -139,6 +145,7 @@ public class Game {
 		else if(inGameState == DRAW_STATE)
 		{
 			draw();
+			endOpt.setValid(true);
 			hasSummoned = false;
 			inGameState = PLAY_STATE;
 		}
@@ -172,12 +179,23 @@ public class Game {
 						break;
 					}
 				}
+				
+				//Check End Button
+				if(endOpt.isTouched(tx, ty))
+				{
+					end();
+				}
+				
 			}
 
 		}
 		else if(inGameState == HAND_OPT_STATE)
 		{
 			handSel.update();
+		}
+		else if(inGameState == TRIB_OPT_STATE)
+		{
+			tribSel.update();
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
@@ -191,14 +209,23 @@ public class Game {
 	
 	public void render(SpriteBatch batch)
 	{
+		//Render Locations
 		hand.render(batch);
 		ehand.render(batch);
 		field.render(batch);
 		efield.render(batch);
 		
+		
+		//Render Options
+		endOpt.render(batch);
+		
 		if(inGameState == HAND_OPT_STATE)
 		{
 			handSel.render(batch);
+		}
+		else if(inGameState == TRIB_OPT_STATE)
+		{
+			tribSel.render(batch);
 		}
 	}
 	
@@ -222,6 +249,7 @@ public class Game {
 	public void end()
 	{
 		inGameState = ACCEPT_STATE;
+		endOpt.setValid(false);
 		netman.send("ENDTURN");
 	}
 	
@@ -231,6 +259,8 @@ public class Game {
 		{
 			if(hand.getCard(i).getValue() == c.getValue())
 			{
+				hand.getCard(i).setAttackPosition(true);
+				hand.getCard(i).setVisible(true);
 				field.add(hand.remove(i));
 				break;
 			}
@@ -253,6 +283,12 @@ public class Game {
 		}
 		hasSummoned = true;
 		netman.send("SET." + c.getValue());
+	}
+	
+	public void skill(int pos)
+	{
+			field.remove(pos);
+			netman.send("SKILL." + pos);
 	}
 	//*************************************************
 	//*************     NET ACTIONS     ***************
@@ -321,5 +357,11 @@ public class Game {
 				break;
 			}
 		}
+	}
+	
+	public void exeSKILL(String param)
+	{
+		int pos = Integer.parseInt(param);
+		efield.remove(pos);
 	}
 }

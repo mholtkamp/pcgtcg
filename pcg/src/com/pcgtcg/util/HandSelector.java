@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
+import com.pcgtcg.util.*;
 
 public class HandSelector extends OptionSelector {
 	
@@ -18,10 +19,10 @@ public class HandSelector extends OptionSelector {
 		super();
 		this.card = card;
 		
-		summonOption = new Option("Summon",25,300);
-		setOption = new Option("Set", 25, 250);
-		activateOption = new Option("Activate", 25, 200);
-		cancelOption = new Option("Cancel", 25, 150);
+		summonOption = new Option("Summon",12,300);
+		setOption = new Option("Set", 12, 250);
+		activateOption = new Option("Activate", 12, 200);
+		cancelOption = new Option("Cancel", 12, 150);
 		
 		options.add(summonOption);
 		options.add(setOption);
@@ -35,6 +36,7 @@ public class HandSelector extends OptionSelector {
 			summonOption.setValid(false);
 			setOption.setValid(false);
 		}
+		
 			
 	}
 	
@@ -57,7 +59,8 @@ public class HandSelector extends OptionSelector {
 				}
 				else
 				{
-					
+					pcgtcg.game.tribSel = new TributeSelector(card);
+					pcgtcg.game.inGameState = pcgtcg.game.TRIB_OPT_STATE;
 				}
 			}
 			else if(cancelOption.isTouched(tx, ty))
@@ -73,7 +76,7 @@ public class HandSelector extends OptionSelector {
 				}
 				else
 				{
-					
+					pcgtcg.game.inGameState = pcgtcg.game.TRIB_OPT_STATE;
 				}
 			}
 		}

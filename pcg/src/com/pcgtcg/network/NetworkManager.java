@@ -132,6 +132,10 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeSET(params.replaceAll("[.]", ""));
 				}
+				else if(com.equals("SKILL"))
+				{
+					pcgtcg.game.exeSKILL(params.replaceAll("[.]", ""));
+				}
 			
 				
 				

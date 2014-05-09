@@ -12,6 +12,7 @@ public class CK extends Card {
 		value = 'K';
 		power = 17;
 		tributeValue = 1;
+		tributeCost = 2;
 	}
 
 	public void activate()

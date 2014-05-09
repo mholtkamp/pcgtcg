@@ -12,6 +12,7 @@ public class C8 extends Card {
 		value = '8';
 		power = 8;
 		tributeValue = 1;
+		tributeCost = 1;
 	}
 
 	public void activate()
