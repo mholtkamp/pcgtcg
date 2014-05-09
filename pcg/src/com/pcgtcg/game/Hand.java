@@ -7,47 +7,43 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
 
-public class Hand {
+public class Hand extends Location {
 	
-	private final int MAX_SIZE = 7;
 	private final int POS_X = 200, POS_Y = 0, POS_WIDTH = 50, POS_HEIGHT = 75, POS_SPACING = POS_WIDTH;
-	private final int EPOS_X = POS_X, EPOS_Y = 440, EPOS_WIDTH = 50, EPOS_HEIGHT = 75, EPOS_SPACING = EPOS_WIDTH;
-	private Texture backTex;
-	private LinkedList<Card> cards;
-	private boolean isOwn;
-	
+	private final int EPOS_X = POS_X, EPOS_Y = 445, EPOS_WIDTH = 50, EPOS_HEIGHT = 75, EPOS_SPACING = EPOS_WIDTH;
 	
 	public Hand()
 	{
-		cards = new LinkedList<Card>();
-		backTex = pcgtcg.manager.get("data/cardBackTex.png", Texture.class);
+		super();
+		maxSize = 7;
 		
 	}
 	
 	public Hand(boolean isOwn)
 	{
-		this();
-		this.isOwn = isOwn;
+		super(isOwn);
+		maxSize = 7;
 	}
 
-	public boolean add(Card c)
+
+	
+	protected void updatePosition()
 	{
-		if(cards.size() < MAX_SIZE)
+		if(isOwn)
 		{
-			cards.add(c);
-			updatePosition();
-			return true;
+			for(int i = 0; i < cards.size(); i++)
+			{
+				cards.get(i).setBox(POS_X + POS_SPACING*i, POS_Y, POS_WIDTH, POS_HEIGHT);
+			}
 		}
 		else
-			return false;
-	}
-	
-	private void updatePosition()
-	{
-		for(int i = 0; i < cards.size(); i++)
 		{
-			cards.get(i).setBox(POS_X + POS_SPACING*i, POS_Y, POS_WIDTH, POS_HEIGHT);
+			for(int i = 0; i < cards.size(); i++)
+			{
+				cards.get(i).setBox(EPOS_X + EPOS_SPACING*i, EPOS_Y, EPOS_WIDTH, EPOS_HEIGHT);
+			}
 		}
+			
 	}
 	
 	public void render(SpriteBatch batch)

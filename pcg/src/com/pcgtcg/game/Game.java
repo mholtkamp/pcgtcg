@@ -6,29 +6,39 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
+import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
 import com.pcgtcg.network.Client;
 import com.pcgtcg.network.NetworkManager;
 import com.pcgtcg.network.Server;
+import com.pcgtcg.util.HandSelector;
 
 public class Game {
 
-	private final int NULL_STATE = -1, INIT_STATE = 0, DRAW_STATE = 1, PLAY_STATE = 2, ACCEPT_STATE = 3; 
-	private final int ONE_STATE = 1, TWO_STATE = 2;
-	private int turnState;
-	private int inGameState;
+	public final int NULL_STATE = -1, INIT_STATE = 0, DRAW_STATE = 1, PLAY_STATE = 2, ACCEPT_STATE = 3; 
+	public final int HAND_OPT_STATE = 4, FIELD_OPT_STATE = 5, TRIB_OPT_STATE = 6, ATT_TARGET_STATE = 7;
+	public final int ONE_STATE = 1, TWO_STATE = 2;
+	public int turnState;
+	public int inGameState;
 	private int testStatus;
 	
-	private Player player;
-	private Player eplayer;
-	private Hand hand;
-	private Hand ehand;
-	private LinkedList<Card> field;
-	private LinkedList<Card> efield;
-	private LinkedList<Card> grave;
-	private LinkedList<Card> egrave;
 	
-	private int playerNum;
+	//Player + Locations
+	public Player player;
+	public Player eplayer;
+	public Hand hand;
+	public Hand ehand;
+	public Field field;
+	public Field efield;
+	public LinkedList<Card> grave;
+	public LinkedList<Card> egrave;
+	
+	//Options
+	private HandSelector handSel;
+	
+	public boolean hasSummoned;
+	public int playerNum;
 	public int firstTurn;
 	public NetworkManager netman;
 	
@@ -38,10 +48,12 @@ public class Game {
 		eplayer = new Player();
 		hand = new Hand(true);
 		ehand = new Hand(false);
-		field = new LinkedList<Card>();
-		efield = new LinkedList<Card>();
+		field = new Field(true);
+		efield = new Field(false);
 		grave = new LinkedList<Card>();
 		egrave = new LinkedList<Card>();
+		hasSummoned = false;
+		
 	}
 	
 	public Game(boolean isHost)
@@ -127,12 +139,47 @@ public class Game {
 		else if(inGameState == DRAW_STATE)
 		{
 			draw();
+			hasSummoned = false;
 			inGameState = PLAY_STATE;
 		}
 		else if(inGameState == PLAY_STATE)
 		{
-			
+			if(Gdx.input.justTouched())
+			{
+				Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+				pcgtcg.camera.unproject(touchPos);
+				float tx = touchPos.x;
+				float ty = touchPos.y;
+				
+				//Check Hand
+				for(int i = 0; i < hand.getSize(); i++)
+				{
+					if(hand.getCard(i).isTouched(tx, ty))
+					{
+						inGameState = HAND_OPT_STATE;
+						handSel = new HandSelector(hand.getCard(i));
+						System.out.println("Card touched!");
+						break;
+					}
+				}
+				
+				//Check Field
+				for(int i =0; i < field.getSize(); i++)
+				{
+					if(field.getCard(i).isTouched(tx,ty))
+					{
+						inGameState = FIELD_OPT_STATE;
+						break;
+					}
+				}
+			}
+
 		}
+		else if(inGameState == HAND_OPT_STATE)
+		{
+			handSel.update();
+		}
+		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
 		{
 			netman.close();
@@ -146,6 +193,13 @@ public class Game {
 	{
 		hand.render(batch);
 		ehand.render(batch);
+		field.render(batch);
+		efield.render(batch);
+		
+		if(inGameState == HAND_OPT_STATE)
+		{
+			handSel.render(batch);
+		}
 	}
 	
 	
@@ -171,6 +225,35 @@ public class Game {
 		netman.send("ENDTURN");
 	}
 	
+	public void summon(Card c)
+	{
+		for(int i = 0; i < hand.getSize(); i++)
+		{
+			if(hand.getCard(i).getValue() == c.getValue())
+			{
+				field.add(hand.remove(i));
+				break;
+			}
+		}
+		hasSummoned = true;
+		netman.send("SUMMON." + c.getValue());
+	}
+	
+	public void set(Card c)
+	{
+		for(int i = 0; i < hand.getSize(); i++)
+		{
+			if(hand.getCard(i).getValue() == c.getValue())
+			{
+				hand.getCard(i).setAttackPosition(false);
+				hand.getCard(i).setVisible(false);
+				field.add(hand.remove(i));
+				break;
+			}
+		}
+		hasSummoned = true;
+		netman.send("SET." + c.getValue());
+	}
 	//*************************************************
 	//*************     NET ACTIONS     ***************
 	//*************************************************
@@ -210,5 +293,33 @@ public class Game {
 			turnState = ONE_STATE;
 		else
 			turnState = TWO_STATE;
+	}
+	
+	public void exeSUMMON(String param)
+	{
+		char cardVal = param.charAt(0);
+		for(int i = 0; i < ehand.getSize(); i++)
+		{
+			if(ehand.getCard(i).getValue() == cardVal)
+			{
+				efield.add(ehand.remove(i));
+				break;
+			}
+		}
+	}
+	
+	public void exeSET(String param)
+	{
+		char cardVal = param.charAt(0);
+		for(int i = 0; i < ehand.getSize(); i++)
+		{
+			if(ehand.getCard(i).getValue() == cardVal)
+			{
+				ehand.getCard(i).setAttackPosition(false);
+				ehand.getCard(i).setVisible(false);
+				efield.add(ehand.remove(i));
+				break;
+			}
+		}
 	}
 }

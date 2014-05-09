@@ -124,7 +124,14 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeENDTURN();
 				}
-				
+				else if(com.equals("SUMMON"))
+				{
+					pcgtcg.game.exeSUMMON(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("SET"))
+				{
+					pcgtcg.game.exeSET(params.replaceAll("[.]", ""));
+				}
 			
 				
 				
