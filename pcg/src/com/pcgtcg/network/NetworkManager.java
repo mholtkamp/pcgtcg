@@ -136,6 +136,10 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeSKILL(params.replaceAll("[.]", ""));
 				}
+				else if(com.equals("TOGGLE"))
+				{
+					pcgtcg.game.exeTOGGLE(params.replaceAll("[.]", ""));
+				}
 			
 				
 				

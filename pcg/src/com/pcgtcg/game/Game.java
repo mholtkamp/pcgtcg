@@ -12,6 +12,7 @@ import com.pcgtcg.card.Card;
 import com.pcgtcg.network.Client;
 import com.pcgtcg.network.NetworkManager;
 import com.pcgtcg.network.Server;
+import com.pcgtcg.util.FieldSelector;
 import com.pcgtcg.util.HandSelector;
 import com.pcgtcg.util.Option;
 import com.pcgtcg.util.TributeSelector;
@@ -40,6 +41,7 @@ public class Game {
 	private HandSelector handSel;
 	public Option endOpt;
 	public TributeSelector tribSel;
+	public FieldSelector fieldSel;
 	
 	public boolean hasSummoned;
 	public int playerNum;
@@ -176,6 +178,7 @@ public class Game {
 					if(field.getCard(i).isTouched(tx,ty))
 					{
 						inGameState = FIELD_OPT_STATE;
+						fieldSel = new FieldSelector(field.getCard(i));
 						break;
 					}
 				}
@@ -196,6 +199,10 @@ public class Game {
 		else if(inGameState == TRIB_OPT_STATE)
 		{
 			tribSel.update();
+		}
+		else if(inGameState == FIELD_OPT_STATE)
+		{
+			fieldSel.update();
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
@@ -227,6 +234,10 @@ public class Game {
 		{
 			tribSel.render(batch);
 		}
+		else if(inGameState == FIELD_OPT_STATE)
+		{
+			fieldSel.render(batch);
+		}
 	}
 	
 	
@@ -250,6 +261,8 @@ public class Game {
 	{
 		inGameState = ACCEPT_STATE;
 		endOpt.setValid(false);
+		for(int i = 0; i < field.getSize(); i++)
+			field.getCard(i).setHasAttacked(false);
 		netman.send("ENDTURN");
 	}
 	
@@ -266,6 +279,7 @@ public class Game {
 			}
 		}
 		hasSummoned = true;
+		c.setHasAttacked(true);
 		netman.send("SUMMON." + c.getValue());
 	}
 	
@@ -282,6 +296,7 @@ public class Game {
 			}
 		}
 		hasSummoned = true;
+		c.setHasAttacked(true);
 		netman.send("SET." + c.getValue());
 	}
 	
@@ -289,6 +304,16 @@ public class Game {
 	{
 			field.remove(pos);
 			netman.send("SKILL." + pos);
+	}
+	
+	public void toggle(int pos)
+	{
+		field.getCard(pos).setVisible(true);
+		field.getCard(pos).toggleAttackPosition();
+		netman.send("TOGGLE."+pos);
+		field.updatePosition();
+		
+		//Weird shit is happening on toggle. please fix this sober martin.
 	}
 	//*************************************************
 	//*************     NET ACTIONS     ***************
@@ -363,5 +388,13 @@ public class Game {
 	{
 		int pos = Integer.parseInt(param);
 		efield.remove(pos);
+	}
+	
+	public void exeTOGGLE(String param)
+	{
+		int pos = Integer.parseInt(param);
+		efield.getCard(pos).toggleAttackPosition();
+		efield.getCard(pos).setVisible(true);
+		efield.updatePosition();
 	}
 }

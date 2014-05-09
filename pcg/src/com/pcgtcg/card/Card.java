@@ -22,10 +22,12 @@ public abstract class Card implements Touchable {
 	protected Texture backTex;
 	
 	private Rectangle box;
+	private Rectangle fbox;
 	
 	public Card()
 	{
 		box = new Rectangle();
+		fbox = new Rectangle();
 		box.x = 50;
 		box.y = 50;
 		box.width = 100;
@@ -109,14 +111,36 @@ public abstract class Card implements Touchable {
 		box.height = height;
 	}
 	
+	public void setFBox(int x, int y, int width, int height)
+	{
+		fbox.x = x;
+		fbox.y = y;
+		fbox.width = width;
+		fbox.height = height;
+	}
+	
 	public Rectangle getBox()
 	{
 		return box;
 	}
 	
+	public Rectangle getFBox()
+	{
+		return fbox;
+	}
+	
+	public Rectangle getLogicalBox()
+	{
+		if(attackPosition)
+			return box;
+		else
+			return fbox;
+	}
 	public boolean isTouched(float x, float y)
 	{
-		if(box.contains(x, y))
+		if(attackPosition && box.contains(x, y))
+			return true;
+		else if(!attackPosition && fbox.contains(x,y))
 			return true;
 		else
 			return false;

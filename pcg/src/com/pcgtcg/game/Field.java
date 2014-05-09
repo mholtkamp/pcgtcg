@@ -29,7 +29,10 @@ public class Field  extends Location {
 				if(cards.get(i).inAttackPosition())
 					cards.get(i).setBox(POS_X + POS_SPACING*i, POS_Y, POS_WIDTH, POS_HEIGHT);
 				else
+				{
 					cards.get(i).setBox(POS_X + POS_SPACING*i + (POS_WIDTH + POS_SPACING)/2, POS_Y + 16, POS_WIDTH, POS_HEIGHT);
+					cards.get(i).setFBox(POS_X + POS_SPACING*i + (POS_WIDTH + POS_SPACING)/2 - POS_HEIGHT, POS_Y + 16, POS_HEIGHT, POS_WIDTH);
+				}
 			}
 		}
 		else
@@ -39,7 +42,10 @@ public class Field  extends Location {
 				if(cards.get(i).inAttackPosition())
 					cards.get(i).setBox(EPOS_X + EPOS_SPACING*i, EPOS_Y, EPOS_WIDTH, EPOS_HEIGHT);
 				else
+				{
 					cards.get(i).setBox(EPOS_X + EPOS_SPACING*i + (EPOS_WIDTH + EPOS_SPACING)/2, EPOS_Y + 16, EPOS_WIDTH, EPOS_HEIGHT);
+					cards.get(i).setFBox(EPOS_X + EPOS_SPACING*i + (EPOS_WIDTH + EPOS_SPACING)/2 - EPOS_HEIGHT, EPOS_Y + 16, EPOS_HEIGHT, EPOS_WIDTH);
+				}
 					
 			}
 		}

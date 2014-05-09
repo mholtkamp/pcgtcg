@@ -31,7 +31,7 @@ public class HandSelector extends OptionSelector {
 		
 		if(!card.hasActive())
 			activateOption.setValid(false);
-		if(pcgtcg.game.hasSummoned || (pcgtcg.game.field.getSize() >= pcgtcg.game.field.getMaxSize()))
+		if(pcgtcg.game.hasSummoned || ((pcgtcg.game.field.getSize() >= pcgtcg.game.field.getMaxSize()) && (card.getTributeCost() == 0)))
 		{
 			summonOption.setValid(false);
 			setOption.setValid(false);

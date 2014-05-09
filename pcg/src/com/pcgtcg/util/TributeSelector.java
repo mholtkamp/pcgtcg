@@ -1,5 +1,6 @@
 package com.pcgtcg.util;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
@@ -50,8 +51,11 @@ public class TributeSelector extends OptionSelector{
 			
 			if(tributeOption.isTouched(tx, ty))
 			{
+				Collections.sort(markedPositions);
+				Collections.reverse(markedPositions);
 				for(int i = 0; i < markedPositions.size(); i++)
 				{
+					
 					pcgtcg.game.skill(markedPositions.get(i));
 				}
 				
@@ -91,7 +95,7 @@ public class TributeSelector extends OptionSelector{
 			pcgtcg.game.field.getCard(i).render(batch);
 			if(markedPositions.contains(i))
 			{
-				Rectangle cbox = pcgtcg.game.field.getCard(i).getBox();
+				Rectangle cbox = pcgtcg.game.field.getCard(i).getLogicalBox();
 				batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
 				
 			}
