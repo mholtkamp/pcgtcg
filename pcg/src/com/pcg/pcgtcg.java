@@ -33,6 +33,7 @@ public class pcgtcg implements ApplicationListener {
 	
 	//State
 	public static int gameState;
+	public static String connectIP;
 	
 	
 	
@@ -99,7 +100,7 @@ public class pcgtcg implements ApplicationListener {
 	public void render()
 	{
 		update();
-		
+		batch.setProjectionMatrix(camera.combined);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		

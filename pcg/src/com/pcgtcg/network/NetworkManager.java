@@ -23,11 +23,11 @@ public class NetworkManager implements Runnable{
 	protected BufferedReader buffer;
 	protected Socket socket;
 
-	
+	private List<String> addresses;
 	public NetworkManager()
 	{
 		connected = false;
-		List<String> addresses = new ArrayList<String>();
+		addresses = new ArrayList<String>();
         
 		// BEGIN code borrowed from http://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
 		try
@@ -171,6 +171,12 @@ public class NetworkManager implements Runnable{
 	public void close()
 	{
 		socket.dispose();
+		
+	}
+	
+	public List<String> getIP()
+	{
+		return addresses; 
 		
 	}
 }

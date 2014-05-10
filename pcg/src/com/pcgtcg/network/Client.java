@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.SocketHints;
+import com.pcg.pcgtcg;
 
 public class Client extends NetworkManager implements Runnable{
 	
@@ -20,7 +21,8 @@ public class Client extends NetworkManager implements Runnable{
 	{
 		socketHints = new SocketHints();
 		socketHints.connectTimeout = 400000;
-		socket = Gdx.net.newClientSocket(Protocol.TCP, "192.168.1.118", 5151, socketHints);
+		System.out.println("Connecting with this IP: " +  pcgtcg.connectIP);
+		socket = Gdx.net.newClientSocket(Protocol.TCP, pcgtcg.connectIP, 5151, socketHints);
 		
 		connected = true;
         buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 

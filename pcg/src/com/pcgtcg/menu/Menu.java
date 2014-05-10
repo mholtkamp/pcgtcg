@@ -1,10 +1,17 @@
 package com.pcgtcg.menu;
 
+import java.util.List;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.game.Game;
 import com.pcgtcg.util.Button;
+import com.pcgtcg.util.Option;
+import com.pcgtcg.util.TextField;
 
 public class Menu {
 
@@ -20,7 +27,14 @@ public class Menu {
 	private Button optionsButton;
 	private Button hostButton;
 	private Button connectButton;
+	
+	
+	private Option connectOption;
+	private Option cancelOption;
+	private TextField ipField;
 	private BitmapFont font;
+	
+	private List<String> hostAdds;
 	
 	public Menu()
 	{
@@ -34,6 +48,7 @@ public class Menu {
 		connectButton.setText("Connect");
 		
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
+		connectOption = new Option("Connect",200,320);
 	}
 	
 	
@@ -59,6 +74,17 @@ public class Menu {
 			font.setScale(2f);
 			font.setColor(0f,0f,0f,1f);
 			font.draw(batch, "Waiting for connection...", 100, 400);
+			font.setScale(1f);
+			font.setColor(1f,0f,0f,1f);
+			for(int i = 0; i < hostAdds.size(); i++)
+			{
+				font.draw(batch,hostAdds.get(i),100,230 - i*30);
+			}
+		}
+		else if(menuState == CONNECT_STATE)
+		{
+			ipField.render(batch);
+			connectOption.render(batch);
 		}
 		
 		
@@ -81,13 +107,15 @@ public class Menu {
 				menuState = HOST_STATE;
 				System.out.println("Server Game created.");
 				pcgtcg.game = new Game(true);
+				hostAdds = pcgtcg.game.netman.getIP();
 				hostButton.clear();
 			}
 			else if(connectButton.isActive())
 			{
 				menuState = CONNECT_STATE;
-				System.out.println("Client Game created.");
-				pcgtcg.game = new Game(false);
+				ipField = new TextField("IP",200,400);
+				Gdx.input.setOnscreenKeyboardVisible(true);
+				Gdx.input.setInputProcessor(ipField);
 				connectButton.clear();
 			}
 		}
@@ -102,10 +130,31 @@ public class Menu {
 		}
 		else if(menuState == CONNECT_STATE)
 		{
-			if(pcgtcg.game.netman.isConnected())
+			if(Gdx.input.justTouched())
+			{
+				Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+				pcgtcg.camera.unproject(touchPos);
+				float tx = touchPos.x;
+				float ty = touchPos.y;
+				
+				if(connectOption.isTouched(tx, ty))
+				{
+					pcgtcg.connectIP = ipField.getData();
+					pcgtcg.game = new Game(false);
+				}
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.ENTER))
+			{
+				
+				System.out.println("Client Game created.");
+				pcgtcg.connectIP = ipField.getData();
+				pcgtcg.game = new Game(false);
+			}
+			if((pcgtcg.game != null) && (pcgtcg.game.netman != null) && pcgtcg.game.netman.isConnected())
 			{
 				menuState = MAIN_STATE;
 				System.out.println("Connected to Server!");
+				Gdx.input.setOnscreenKeyboardVisible(false);
 				pcgtcg.gameState = pcgtcg.GAME_STATE;
 			}
 		}
