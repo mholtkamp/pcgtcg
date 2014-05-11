@@ -130,7 +130,7 @@ public class Menu {
 		}
 		else if(menuState == CONNECT_STATE)
 		{
-			if(Gdx.input.justTouched())
+			if(Gdx.input.justTouched() && (pcgtcg.game == null))
 			{
 				Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
 				pcgtcg.camera.unproject(touchPos);
@@ -143,7 +143,7 @@ public class Menu {
 					pcgtcg.game = new Game(false);
 				}
 			}
-			if(Gdx.input.isKeyPressed(Input.Keys.ENTER))
+			if(Gdx.input.isKeyPressed(Input.Keys.ENTER) && (pcgtcg.game == null))
 			{
 				
 				System.out.println("Client Game created.");

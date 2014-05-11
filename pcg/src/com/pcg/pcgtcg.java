@@ -54,6 +54,8 @@ public class pcgtcg implements ApplicationListener {
 	
 	public void dispose() {
 		batch.dispose();
+		if((game != null) && (game.netman != null))
+			pcgtcg.game.netman.close();
 	}
 
 	public void loadAssets()
@@ -123,4 +125,5 @@ public class pcgtcg implements ApplicationListener {
 	@Override
 	public void resume() {
 	}
+	
 }

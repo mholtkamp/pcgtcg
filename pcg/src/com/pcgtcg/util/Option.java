@@ -63,5 +63,22 @@ public class Option implements Touchable {
 		isValid = v;
 	}
 	
+	public void setX(float x)
+	{
+		box.x = x;
+	}
+	public void setY(float y)
+	{
+		box.y = y;
+	}
+	public void setWidth(float w)
+	{
+		box.width = w;
+	}
+	
+	public void setHeight(float h)
+	{
+		box.height = h;
+	}
 
 }

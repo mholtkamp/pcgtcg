@@ -32,6 +32,7 @@ public class Game {
 	public boolean hasWon;
 	public boolean gameOver;
 	public boolean isFirstTurn;
+	public boolean hasPlayerAttacked;
 	
 	public Texture blackTex;
 	public BitmapFont font;
@@ -50,6 +51,7 @@ public class Game {
 	//Options
 	private HandSelector handSel;
 	public Option endOpt;
+	public Option quitOpt;;
 	public TributeSelector tribSel;
 	public FieldSelector fieldSel;
 	public AttackSelector attackSel;
@@ -72,7 +74,10 @@ public class Game {
 		hasSummoned = false;
 		hasWon = false;
 		gameOver = false;
+		hasPlayerAttacked = false;
 		endOpt = new Option("End Turn",650,220);
+		quitOpt = new Option("X",760,440);
+		quitOpt.setWidth(40);
 		endOpt.setValid(false);
 		blackTex = pcgtcg.manager.get("data/blackTex.png",Texture.class);
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
@@ -162,6 +167,16 @@ public class Game {
 		else if(inGameState == ACCEPT_STATE)
 		{
 			netman.poll();
+			if(Gdx.input.justTouched())
+			{
+			Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+			pcgtcg.camera.unproject(touchPos);
+			float tx = touchPos.x;
+			float ty = touchPos.y;
+			
+			//if(quitOpt.isTouched(tx, ty))
+			//	quit();
+			}
 		}
 		else if(inGameState == DRAW_STATE)
 		{
@@ -214,7 +229,6 @@ public class Game {
 				{
 					end();
 				}
-				
 			}
 
 		}
@@ -255,13 +269,14 @@ public class Game {
 		
 		//Render Options
 		endOpt.render(batch);
+		//quitOpt.render(batch);
 		
 		//Render Text
-		font.setScale(1f);
+		font.setScale(1.5f);
 		font.setColor(0f, 0f, 1f, 1f);
-		font.draw(batch, ""+player.life, 100, 200);
+		font.draw(batch, ""+player.life, 60, 210);
 		font.setColor(1f,0f,0f,1f);
-		font.draw(batch, ""+eplayer.life, 100, 280);
+		font.draw(batch, ""+eplayer.life, 60, 315);
 		if(inGameState == HAND_OPT_STATE)
 		{
 			handSel.render(batch);
@@ -290,6 +305,13 @@ public class Game {
 		}
 	}
 	
+	public void quit()
+	{
+		netman.close();
+		pcgtcg.game = null;
+		pcgtcg.gameState = pcgtcg.MENU_STATE;
+	}
+	
 	
 	//*************************************************
 	//*************     GAME ACTIONS    ***************
@@ -298,7 +320,14 @@ public class Game {
 	public void draw()
 	{
 		hand.add(player.deck.curCards.removeFirst());
+		upkeep();
 		netman.send("DRAW");
+	}
+	
+	public void upkeep()
+	{
+		hasPlayerAttacked = false;
+
 	}
 	
 	public void fdraw()
@@ -319,12 +348,14 @@ public class Game {
 	
 	public void summon(Card c)
 	{
+		
 		for(int i = 0; i < hand.getSize(); i++)
 		{
 			if(hand.getCard(i).getValue() == c.getValue())
 			{
 				hand.getCard(i).setAttackPosition(true);
 				hand.getCard(i).setVisible(true);
+				hand.getCard(i).setHasAttacked(pcgtcg.game.hasPlayerAttacked);
 				field.add(hand.remove(i));
 				break;
 			}
@@ -334,13 +365,18 @@ public class Game {
 	}
 	
 	public void set(Card c)
-	{
+	{		
+		boolean ats = false;
+		for(int i=0; i < field.getSize(); i++)
+			ats = ats || field.getCard(i).hasAttacked();
+	
 		for(int i = 0; i < hand.getSize(); i++)
 		{
 			if(hand.getCard(i).getValue() == c.getValue())
 			{
 				hand.getCard(i).setAttackPosition(false);
 				hand.getCard(i).setVisible(false);
+				hand.getCard(i).setHasAttacked(pcgtcg.game.hasPlayerAttacked);
 				field.add(hand.remove(i));
 				break;
 			}
@@ -354,6 +390,7 @@ public class Game {
 		efield.remove(pos);
 		netman.send("KILL." + pos);
 	}
+	
 	public void skill(int pos)
 	{
 			field.remove(pos);

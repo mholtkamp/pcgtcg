@@ -52,6 +52,7 @@ public class FieldSelector extends OptionSelector {
 				if(pcgtcg.game.efield.getSize() == 0)
 				{
 					card.setHasAttacked(true);
+					pcgtcg.game.hasPlayerAttacked = true;
 					pcgtcg.game.damage(card.getPower());
 					pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
 				}

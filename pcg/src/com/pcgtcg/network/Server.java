@@ -42,7 +42,8 @@ public class Server extends NetworkManager implements Runnable{
 	public void close()
 	{
 		super.close();
-		serverSocket.dispose();
+		if(serverSocket != null)
+			serverSocket.dispose();
 	}
 	
 }

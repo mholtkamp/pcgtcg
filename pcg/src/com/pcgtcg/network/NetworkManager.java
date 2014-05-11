@@ -26,6 +26,7 @@ public class NetworkManager implements Runnable{
 	private List<String> addresses;
 	public NetworkManager()
 	{
+		buffer = null;
 		connected = false;
 		addresses = new ArrayList<String>();
         
@@ -170,7 +171,8 @@ public class NetworkManager implements Runnable{
 	
 	public void close()
 	{
-		socket.dispose();
+		if(socket != null)
+			socket.dispose();
 		
 	}
 	

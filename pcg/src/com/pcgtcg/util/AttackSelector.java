@@ -53,6 +53,7 @@ public class AttackSelector extends OptionSelector {
 				//*********************************************
 				
 				card.setHasAttacked(true);
+				pcgtcg.game.hasPlayerAttacked = true;
 				
 				if(card.getPower() > target.getPower())
 				{
