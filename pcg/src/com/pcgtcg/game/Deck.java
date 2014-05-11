@@ -3,13 +3,21 @@ package com.pcgtcg.game;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.pcg.pcgtcg;
 import com.pcgtcg.card.*;
 
 public class Deck {
 
 	private final int DEFAULT_DECK_SIZE = 26;
+	private final int EPOS_X = 30, EPOS_Y = pcgtcg.SCREEN_HEIGHT - 30 - 105, EPOS_WIDTH = 70, EPOS_HEIGHT = 105;
+	private final int POS_X = pcgtcg.SCREEN_WIDTH - EPOS_X - EPOS_WIDTH, POS_Y = 30, POS_WIDTH = EPOS_WIDTH, POS_HEIGHT = EPOS_HEIGHT;
+	
 	private String curStr;
 	private String allStr;
+	private Texture backTex;
 	
 	public LinkedList<Card> curCards;
 	public LinkedList<Card> allCards;
@@ -18,6 +26,7 @@ public class Deck {
 	{
 		allCards = new LinkedList<Card>();
 		curCards = new LinkedList<Card>();
+		backTex = pcgtcg.manager.get("data/cardBackTex.png",Texture.class);
 
 	}
 
@@ -167,4 +176,14 @@ public class Deck {
 		return allCards.get(index).getValue();
 	}
 	
+	public void render(SpriteBatch batch, boolean isOwn)
+	{
+		if(curCards.size() > 0)
+		{
+			if(isOwn)
+				batch.draw(backTex,POS_X,POS_Y,POS_WIDTH,POS_HEIGHT);
+			else
+				batch.draw(backTex,EPOS_X,EPOS_Y,EPOS_WIDTH,EPOS_HEIGHT);
+		}
+	}
 }

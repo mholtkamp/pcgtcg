@@ -45,8 +45,8 @@ public class Game {
 	public Hand ehand;
 	public Field field;
 	public Field efield;
-	public LinkedList<Card> grave;
-	public LinkedList<Card> egrave;
+	public Grave grave;
+	public Grave egrave;
 	
 	//Options
 	private HandSelector handSel;
@@ -69,8 +69,8 @@ public class Game {
 		ehand = new Hand(false);
 		field = new Field(true);
 		efield = new Field(false);
-		grave = new LinkedList<Card>();
-		egrave = new LinkedList<Card>();
+		grave = new Grave(true);
+		egrave = new Grave(false);
 		hasSummoned = false;
 		hasWon = false;
 		gameOver = false;
@@ -265,6 +265,10 @@ public class Game {
 		ehand.render(batch);
 		field.render(batch);
 		efield.render(batch);
+		grave.render(batch);
+		egrave.render(batch);
+		player.deck.render(batch,true);
+		eplayer.deck.render(batch,false);
 		
 		
 		//Render Options
@@ -274,9 +278,9 @@ public class Game {
 		//Render Text
 		font.setScale(1.5f);
 		font.setColor(0f, 0f, 1f, 1f);
-		font.draw(batch, ""+player.life, 60, 210);
+		font.draw(batch, ""+player.life, 60, 220);
 		font.setColor(1f,0f,0f,1f);
-		font.draw(batch, ""+eplayer.life, 60, 315);
+		font.draw(batch, ""+eplayer.life, 60, 295);
 		if(inGameState == HAND_OPT_STATE)
 		{
 			handSel.render(batch);
@@ -319,9 +323,15 @@ public class Game {
 	
 	public void draw()
 	{
-		hand.add(player.deck.curCards.removeFirst());
+		if(player.deck.curCards.isEmpty())
+			player.life = 0;
+		else
+		{
+			hand.add(player.deck.curCards.removeFirst());
+			netman.send("DRAW");
+		}
 		upkeep();
-		netman.send("DRAW");
+
 	}
 	
 	public void upkeep()
@@ -387,13 +397,13 @@ public class Game {
 	
 	public void kill(int pos)
 	{
-		efield.remove(pos);
+		egrave.add(efield.remove(pos));
 		netman.send("KILL." + pos);
 	}
 	
 	public void skill(int pos)
 	{
-			field.remove(pos);
+			grave.add(field.remove(pos));
 			netman.send("SKILL." + pos);
 	}
 	
@@ -506,13 +516,13 @@ public class Game {
 	public void exeKILL(String param)
 	{
 		int pos = Integer.parseInt(param);
-		field.remove(pos);
+		grave.add(field.remove(pos));
 	}
 	
 	public void exeSKILL(String param)
 	{
 		int pos = Integer.parseInt(param);
-		efield.remove(pos);
+		egrave.add(efield.remove(pos));
 	}
 	
 	public void exeTOGGLE(String param)

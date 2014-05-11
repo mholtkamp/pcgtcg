@@ -156,6 +156,10 @@ public abstract class Card implements Touchable {
 		return tributeCost;
 	}
 	
+	public Texture getTexture()
+	{
+		return tex;
+	}
 	
 
 }
