@@ -25,8 +25,6 @@ public class Hand extends Location {
 		maxSize = 7;
 	}
 
-
-	
 	protected void updatePosition()
 	{
 		if(isOwn)
@@ -43,7 +41,6 @@ public class Hand extends Location {
 				cards.get(i).setBox(EPOS_X + EPOS_SPACING*i, EPOS_Y, EPOS_WIDTH, EPOS_HEIGHT);
 			}
 		}
-			
 	}
 	
 	public void render(SpriteBatch batch)
@@ -60,3 +57,4 @@ public class Hand extends Location {
 		}
 	}
 }
+

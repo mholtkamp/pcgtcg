@@ -323,27 +323,52 @@ public class Game {
 	
 	public void draw()
 	{
+	    // Check if player has decked out
 		if(player.deck.curCards.isEmpty())
+		{
 			player.life = 0;
+			hasWon = false;
+			gameOver = true;
+		}
 		else
 		{
+		    // Check if hand is full
+		    if(hand.getSize() == hand.getMaxSize())
+		    {
+		        // Discard first card in hand to make room.
+		        sdiscard(0);
+		    }
 			hand.add(player.deck.curCards.removeFirst());
-			netman.send("DRAW");
 		}
+		netman.send("DRAW");
 		upkeep();
-
 	}
 	
+    public void fdraw()
+    {
+        if(eplayer.deck.curCards.isEmpty())
+        {
+            eplayer.life = 0;
+            hasWon = true;
+            gameOver = true;
+        }
+        else
+        {
+            // Check if enemy hand is full
+            if(ehand.getSize() == ehand.getMaxSize())
+            {
+                // Discard their first card to make room for
+                // the forced draw.
+                discard(0);
+            }
+            ehand.add(eplayer.deck.curCards.removeFirst());
+        }
+        netman.send("FDRAW");
+    }
+    
 	public void upkeep()
 	{
 		hasPlayerAttacked = false;
-
-	}
-	
-	public void fdraw()
-	{
-		ehand.add(eplayer.deck.curCards.removeFirst());
-		netman.send("FDRAW");
 	}
 	
 	public void end()
@@ -437,8 +462,20 @@ public class Game {
 	
 	public void skill(int pos)
 	{
-			grave.add(field.remove(pos));
-			netman.send("SKILL." + pos);
+	    grave.add(field.remove(pos));
+		netman.send("SKILL." + pos);
+	}
+	
+	public void retract(int pos)
+	{
+	    ehand.add(efield.remove(pos));
+	    netman.send("RETRACT." + pos);
+	}
+	
+	public void sretract(int pos)
+	{
+	    hand.add(field.remove(pos));
+	    netman.send("SRETRACT." + pos);
 	}
 	
 	public void toggle(int pos)
@@ -489,12 +526,29 @@ public class Game {
 	
 	public void exeDRAW()
 	{
+       if(eplayer.deck.curCards.isEmpty())
+        {
+            eplayer.life = 0;
+            hasWon = true;
+            gameOver = true;
+            inGameState = GAME_OVER_STATE;
+        }
 		ehand.add(eplayer.deck.curCards.removeFirst());
 	}
 	
 	public void exeFDRAW()
-	{
-		hand.add(player.deck.curCards.removeFirst());
+	{      
+	    if(player.deck.curCards.isEmpty())
+        {
+            player.life = 0;
+            hasWon = false;
+            gameOver = true;
+            inGameState = GAME_OVER_STATE;
+        }
+	    else
+	    {
+	        hand.add(player.deck.curCards.removeFirst());
+	    }
 	}
 	
 	public void exeENDTURN()
@@ -603,4 +657,15 @@ public class Game {
 	    egrave.add(ehand.remove(pos));
 	}
 	
+	public void exeRETRACT(String param)
+	{
+	    int pos = Integer.parseInt(param);
+	    hand.add(field.remove(pos));
+	}
+	
+	public void exeSRETRACT(String param)
+	{
+	    int pos = Integer.parseInt(param);
+	    ehand.add(efield.remove(pos));
+	}
 }
