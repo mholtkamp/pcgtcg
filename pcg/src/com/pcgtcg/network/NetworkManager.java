@@ -157,9 +157,14 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeSDAMAGE(params.replaceAll("[.]", ""));
 				}
-			
-				
-				
+				else if(com.equals("DISCARD"))
+				{
+				    pcgtcg.game.exeDISCARD(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("SDISCARD"))
+				{
+				    pcgtcg.game.exeSDISCARD(params.replaceAll("[.]", ""));
+				}
 			}
 		}
 		catch(Exception ex)

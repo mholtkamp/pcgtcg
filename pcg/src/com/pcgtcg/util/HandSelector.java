@@ -35,9 +35,7 @@ public class HandSelector extends OptionSelector {
 		{
 			summonOption.setValid(false);
 			setOption.setValid(false);
-		}
-		
-			
+		}	
 	}
 	
 	public void update()
@@ -79,6 +77,11 @@ public class HandSelector extends OptionSelector {
 					pcgtcg.game.tribSel = new TributeSelector(card,false);
 					pcgtcg.game.inGameState = pcgtcg.game.TRIB_OPT_STATE;
 				}
+			}
+			else if (activateOption.isTouched(tx, ty))
+			{
+			    pcgtcg.game.activate(card);
+			    pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
 			}
 		}
 	}

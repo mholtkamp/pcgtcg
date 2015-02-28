@@ -358,7 +358,6 @@ public class Game {
 	
 	public void summon(Card c)
 	{
-		
 		for(int i = 0; i < hand.getSize(); i++)
 		{
 			if(hand.getCard(i).getValue() == c.getValue())
@@ -393,6 +392,41 @@ public class Game {
 		}
 		hasSummoned = true;
 		netman.send("SET." + c.getValue());
+	}
+	
+	public void activate(Card c)
+	{
+        for(int i = 0; i < hand.getSize(); i++)
+        {
+            // Find a matching card value to activate
+            if(hand.getCard(i).getValue() == c.getValue())
+            {
+                if(hand.getCard(i).hasActive())
+                {
+                    hand.getCard(i).activate();
+                    sdiscard(i);
+                    break;
+                }
+                else
+                {
+                    // Somehow activate was called on a card with no active
+                    System.out.println("Invalid card activation.");
+                    return;
+                }
+            }
+        }
+	}
+	
+	public void discard(int pos)
+	{
+	    egrave.add(ehand.remove(pos));
+	    netman.send("DISCARD." + pos);
+	}
+	
+	public void sdiscard(int pos)
+	{
+	    grave.add(hand.remove(pos));
+	    netman.send("SDISCARD." + pos);
 	}
 	
 	public void kill(int pos)
@@ -556,4 +590,17 @@ public class Game {
 			inGameState = GAME_OVER_STATE;
 		}
 	}
+	
+    public void exeDISCARD(String param)
+    {
+        int pos = Integer.parseInt(param);
+        grave.add(hand.remove(pos));
+    }
+    
+	public void exeSDISCARD(String param)
+	{
+	    int pos = Integer.parseInt(param);
+	    egrave.add(ehand.remove(pos));
+	}
+	
 }

@@ -10,7 +10,7 @@ public class Field  extends Location {
 	public Field()
 	{
 		super();
-		maxSize = 3;
+		maxSize = 4;
 		
 	}
 	
