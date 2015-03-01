@@ -58,7 +58,11 @@ public class AttackSelector extends OptionSelector {
 				if(card.getPower() > target.getPower())
 				{
 					pcgtcg.game.kill(targetPos);
-					if(target.inAttackPosition())
+					
+					// Deal damage if the target is in attack position
+					// or if the attacking card is an 8.
+					if(target.inAttackPosition() ||
+					   card.getValue() == '8')
 						pcgtcg.game.damage(card.getPower() - target.getPower());
 				}
 				else if(card.getPower() == target.getPower())
