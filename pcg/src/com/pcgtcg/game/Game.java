@@ -253,9 +253,7 @@ public class Game {
 		{
 			netman.close();
 			Gdx.app.exit();
-		}
-
-		
+		}	
 	}
 	
 	public void render(SpriteBatch batch)
@@ -269,7 +267,6 @@ public class Game {
 		egrave.render(batch);
 		player.deck.render(batch,true);
 		eplayer.deck.render(batch,false);
-		
 		
 		//Render Options
 		endOpt.render(batch);
@@ -427,9 +424,18 @@ public class Game {
             if(hand.getCard(i).getValue() == c.getValue())
             {
                 if(hand.getCard(i).hasActive())
-                {
-                    hand.getCard(i).activate();
-                    sdiscard(i);
+                {   
+                    // Discard if not a special summon active
+                    if (c.getValue() != '3' &&
+                        c.getValue() != 'A')
+                    {
+                        sdiscard(i);
+                    }
+                    
+                    // Activate Effect
+                    //hand.getCard(i).activate();
+                    c.activate();
+                    
                     break;
                 }
                 else
