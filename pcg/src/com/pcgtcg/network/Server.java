@@ -25,7 +25,7 @@ public class Server extends NetworkManager implements Runnable{
 		System.out.println("Server running");
 		serverSocketHint = new ServerSocketHints();
 		serverSocketHint.acceptTimeout = 0;
-		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 5151, serverSocketHint);
+		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 2000, serverSocketHint);
 		socket = serverSocket.accept(null);
 		
 		connected = true;

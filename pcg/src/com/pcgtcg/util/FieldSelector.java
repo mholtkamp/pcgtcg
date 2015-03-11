@@ -26,8 +26,10 @@ public class FieldSelector extends OptionSelector {
 		options.add(toggleOption);
 		options.add(cancelOption);
 		
-		if(pcgtcg.game.efield.getSize() == 0)
-			attackOption.setValid(true);
+		if (!card.inAttackPosition())
+		    attackOption.setValid(false);
+//		else if(pcgtcg.game.efield.getSize() == 0)
+//            attackOption.setValid(true);
 		
 		if(card.hasAttacked() || pcgtcg.game.isFirstTurn)
 		{

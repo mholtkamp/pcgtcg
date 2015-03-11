@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
+import com.pcgtcg.util.AnimationEvent;
 
 public class Hand extends Location {
 	
@@ -31,18 +32,50 @@ public class Hand extends Location {
 		{
 			for(int i = 0; i < cards.size(); i++)
 			{
-				cards.get(i).setBox(POS_X + POS_SPACING*i, POS_Y, POS_WIDTH, POS_HEIGHT);
+	            AnimationEvent event = new AnimationEvent();
+                event.setTarget(cards.get(i));
+                
+                event.setDestination(POS_X + POS_SPACING*i,
+                                     POS_Y,
+                                     POS_WIDTH,
+                                     POS_HEIGHT,
+                                     AnimationEvent.DEFAULT_TIME);
+                pcgtcg.game.animationQueue.add(event);
 			}
 		}
 		else
 		{
 			for(int i = 0; i < cards.size(); i++)
 			{
-				cards.get(i).setBox(EPOS_X + EPOS_SPACING*i, EPOS_Y, EPOS_WIDTH, EPOS_HEIGHT);
+                AnimationEvent event = new AnimationEvent();
+                event.setTarget(cards.get(i));
+                
+                event.setDestination(EPOS_X + EPOS_SPACING*i,
+                                     EPOS_Y,
+                                     EPOS_WIDTH,
+                                     EPOS_HEIGHT,
+                                     AnimationEvent.DEFAULT_TIME);
+                pcgtcg.game.animationQueue.add(event);
 			}
 		}
 	}
 	
+   public boolean add(Card c)
+    {
+        if(cards.size() < maxSize)
+        {
+            c.setAttackPosition(true);
+            c.setVisible(true);
+            c.setHasAttacked(false);
+
+            cards.add(c);
+            updatePosition();
+            return true;
+        }
+        else
+            return false;
+    }
+	   
 	public void render(SpriteBatch batch)
 	{
 		if(isOwn)

@@ -14,6 +14,7 @@ import com.pcgtcg.card.Card;
 import com.pcgtcg.network.Client;
 import com.pcgtcg.network.NetworkManager;
 import com.pcgtcg.network.Server;
+import com.pcgtcg.util.AnimationQueue;
 import com.pcgtcg.util.AttackSelector;
 import com.pcgtcg.util.FieldSelector;
 import com.pcgtcg.util.HandSelector;
@@ -60,6 +61,7 @@ public class Game {
 	public int playerNum;
 	public int firstTurn;
 	public NetworkManager netman;
+	public AnimationQueue animationQueue;
 	
 	public Game()
 	{
@@ -81,7 +83,7 @@ public class Game {
 		endOpt.setValid(false);
 		blackTex = pcgtcg.manager.get("data/blackTex.png",Texture.class);
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
-		
+		animationQueue = new AnimationQueue();
 	}
 	
 	public Game(boolean isHost)
@@ -95,6 +97,8 @@ public class Game {
 			(new Thread(netman)).start();
 			player.deck.randomizeDeck();
 			eplayer.deck.randomizeDeck();
+			player.deck.setCardBoxes(true);
+			eplayer.deck.setCardBoxes(false);
 			Random rand = new Random();
 			if(rand.nextFloat() > 0.5)
 			{
@@ -119,6 +123,8 @@ public class Game {
 	public void update()
 	{
 
+	    animationQueue.update();
+	    
 		if(inGameState == INIT_STATE)
 		{
 			String d1 = "DECKONE";
@@ -522,12 +528,14 @@ public class Game {
 	{
 		for(int i = 0; i < params.length(); i++)
 			eplayer.deck.add(params.charAt(i));
+		eplayer.deck.setCardBoxes(false);
 	}
 	
 	public void exeDECKTWO(String params)
 	{
 		for(int i = 0; i < params.length(); i++)
 			player.deck.add(params.charAt(i));
+		player.deck.setCardBoxes(true);
 	}
 	
 	public void exeDRAW()

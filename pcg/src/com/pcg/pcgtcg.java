@@ -35,9 +35,6 @@ public class pcgtcg implements ApplicationListener {
 	public static int gameState;
 	public static String connectIP;
 	
-	
-	
-	
 	public void create()
 	{	
 		camera = new OrthographicCamera();
@@ -85,6 +82,8 @@ public class pcgtcg implements ApplicationListener {
 		manager.load("data/blueTex.png",Texture.class);
 		manager.load("data/validOptionTex.png",Texture.class);
 		manager.load("data/invalidOptionTex.png",Texture.class);
+		manager.load("data/shield.png",Texture.class);
+		manager.load("data/sword.png",Texture.class);
 		manager.update();
 		manager.finishLoading();
 		

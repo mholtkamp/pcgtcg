@@ -100,7 +100,7 @@ public class TributeSelector extends OptionSelector{
 			pcgtcg.game.field.getCard(i).render(batch);
 			if(markedPositions.contains(i))
 			{
-				Rectangle cbox = pcgtcg.game.field.getCard(i).getLogicalBox();
+				Rectangle cbox = pcgtcg.game.field.getCard(i).getBox();
 				batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
 				
 			}

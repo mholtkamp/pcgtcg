@@ -22,7 +22,7 @@ public class Client extends NetworkManager implements Runnable{
 		socketHints = new SocketHints();
 		socketHints.connectTimeout = 400000;
 		System.out.println("Connecting with this IP: " +  pcgtcg.connectIP);
-		socket = Gdx.net.newClientSocket(Protocol.TCP, pcgtcg.connectIP, 5151, socketHints);
+		socket = Gdx.net.newClientSocket(Protocol.TCP, pcgtcg.connectIP, 2000, socketHints);
 		
 		connected = true;
         buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 

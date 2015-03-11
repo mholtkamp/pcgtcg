@@ -119,7 +119,7 @@ public class AttackSelector extends OptionSelector {
 			pcgtcg.game.efield.getCard(i).render(batch);
 			if(pcgtcg.game.efield.getCard(i) == target)
 			{
-				Rectangle cbox = pcgtcg.game.efield.getCard(i).getLogicalBox();
+				Rectangle cbox = pcgtcg.game.efield.getCard(i).getBox();
 				batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
 				
 			}

@@ -1,6 +1,8 @@
 package com.pcgtcg.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.pcg.pcgtcg;
+import com.pcgtcg.util.AnimationEvent;
 
 public class Field  extends Location {
 	
@@ -26,27 +28,30 @@ public class Field  extends Location {
 		{
 			for(int i = 0; i < cards.size(); i++)
 			{
-				if(cards.get(i).inAttackPosition())
-					cards.get(i).setBox(POS_X + POS_SPACING*i, POS_Y, POS_WIDTH, POS_HEIGHT);
-				else
-				{
-					cards.get(i).setBox(POS_X + POS_SPACING*i + (POS_WIDTH + POS_SPACING)/2, POS_Y + 16, POS_WIDTH, POS_HEIGHT);
-					cards.get(i).setFBox(POS_X + POS_SPACING*i + (POS_WIDTH + POS_SPACING)/2 - POS_HEIGHT, POS_Y + 16, POS_HEIGHT, POS_WIDTH);
-				}
+			    AnimationEvent event = new AnimationEvent();
+			    event.setTarget(cards.get(i));
+			    
+			    event.setDestination(POS_X + POS_SPACING*i,
+			                         POS_Y,
+			                         POS_WIDTH,
+			                         POS_HEIGHT,
+			                         AnimationEvent.DEFAULT_TIME);
+			    pcgtcg.game.animationQueue.add(event);
 			}
 		}
 		else
 		{
 			for(int i = 0; i < cards.size(); i++)
 			{
-				if(cards.get(i).inAttackPosition())
-					cards.get(i).setBox(EPOS_X + EPOS_SPACING*i, EPOS_Y, EPOS_WIDTH, EPOS_HEIGHT);
-				else
-				{
-					cards.get(i).setBox(EPOS_X + EPOS_SPACING*i + (EPOS_WIDTH + EPOS_SPACING)/2, EPOS_Y + 16, EPOS_WIDTH, EPOS_HEIGHT);
-					cards.get(i).setFBox(EPOS_X + EPOS_SPACING*i + (EPOS_WIDTH + EPOS_SPACING)/2 - EPOS_HEIGHT, EPOS_Y + 16, EPOS_HEIGHT, EPOS_WIDTH);
-				}
-					
+			    AnimationEvent event = new AnimationEvent();
+                event.setTarget(cards.get(i));
+                
+                event.setDestination(EPOS_X + EPOS_SPACING*i,
+				                     EPOS_Y,
+				                     EPOS_WIDTH,
+				                     EPOS_HEIGHT,
+				                     AnimationEvent.DEFAULT_TIME);
+                pcgtcg.game.animationQueue.add(event);
 			}
 		}
 		

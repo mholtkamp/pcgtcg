@@ -176,6 +176,24 @@ public class Deck {
 		return allCards.get(index).getValue();
 	}
 	
+	public void setCardBoxes(boolean isOwn)
+	{
+	    if(isOwn)
+	    {
+    	    for(int i = 0; i < curCards.size(); i++)
+    	    {
+    	        curCards.get(i).setBox(POS_X,POS_Y,POS_WIDTH,POS_HEIGHT);
+    	    }
+	    }
+	    else
+	    {
+           for(int i = 0; i < curCards.size(); i++)
+            {
+                curCards.get(i).setBox(EPOS_X,EPOS_Y,EPOS_WIDTH,EPOS_HEIGHT);
+            }
+	    }
+	}
+	
 	public void render(SpriteBatch batch, boolean isOwn)
 	{
 		if(curCards.size() > 0)

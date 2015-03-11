@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.pcg.pcgtcg;
+import com.pcgtcg.util.Animated;
 import com.pcgtcg.util.Touchable;
 
-public abstract class Card implements Touchable {
+public abstract class Card implements Touchable , Animated {
 	
 	protected char value;
 	protected int power;
@@ -20,14 +21,14 @@ public abstract class Card implements Touchable {
 	protected String location;
 	protected Texture tex;
 	protected Texture backTex;
+	protected Texture swordTex;
+	protected Texture shieldTex;
 	
 	private Rectangle box;
-	private Rectangle fbox;
 	
 	public Card()
 	{
 		box = new Rectangle();
-		fbox = new Rectangle();
 		box.x = 50;
 		box.y = 50;
 		box.width = 100;
@@ -37,17 +38,34 @@ public abstract class Card implements Touchable {
 		hasAttacked = false;
 		visible = true;
 		attackPosition = true;
-		backTex = pcgtcg.manager.get("data/cardBackTex.png", Texture.class);
+		backTex   = pcgtcg.manager.get("data/cardBackTex.png", Texture.class);
+		swordTex  = pcgtcg.manager.get("data/sword.png",Texture.class);
+		shieldTex = pcgtcg.manager.get("data/shield.png",Texture.class);
 	}
 	
 	public void render(SpriteBatch batch)
 	{
 		if(attackPosition && visible)
+		{
 			batch.draw(tex, box.x, box.y,box.width, box.height);
+			//batch.draw(swordTex, box.x, box.y);
+		}
 		else if(!attackPosition && visible)
-			batch.draw(tex, box.x, box.y, 0, 0, box.width, box.height, 1, 1,90f, 0, 0, tex.getWidth(), tex.getHeight(), false, false);
+		{
+			batch.draw(tex, box.x, box.y,box.width, box.height);
+			batch.setColor(1.0f, 1.0f, 1.0f, 0.5f);
+			batch.enableBlending();
+			batch.draw(shieldTex, box.x, box.y + box.height/4.0f, 64.0f, 64.0f);
+			batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
 		else if(!attackPosition && !visible)
-			batch.draw(backTex, box.x, box.y, 0, 0, box.width, box.height, 1, 1,90f, 0, 0, tex.getWidth(), tex.getHeight(), false, false);
+		{
+			batch.draw(backTex, box.x, box.y,box.width, box.height);
+			batch.setColor(1.0f, 1.0f, 1.0f, 0.5f);
+            batch.enableBlending();
+            batch.draw(shieldTex, box.x, box.y + box.height/4.0f, 64.0f, 64.0f);
+            batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
 	}
 
 	public abstract void summon();
@@ -111,36 +129,14 @@ public abstract class Card implements Touchable {
 		box.height = height;
 	}
 	
-	public void setFBox(int x, int y, int width, int height)
-	{
-		fbox.x = x;
-		fbox.y = y;
-		fbox.width = width;
-		fbox.height = height;
-	}
-	
 	public Rectangle getBox()
 	{
 		return box;
 	}
 	
-	public Rectangle getFBox()
-	{
-		return fbox;
-	}
-	
-	public Rectangle getLogicalBox()
-	{
-		if(attackPosition)
-			return box;
-		else
-			return fbox;
-	}
 	public boolean isTouched(float x, float y)
 	{
-		if(attackPosition && box.contains(x, y))
-			return true;
-		else if(!attackPosition && fbox.contains(x,y))
+		if(box.contains(x, y))
 			return true;
 		else
 			return false;
@@ -160,6 +156,4 @@ public abstract class Card implements Touchable {
 	{
 		return tex;
 	}
-	
-
 }
