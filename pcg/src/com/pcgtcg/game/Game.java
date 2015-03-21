@@ -490,13 +490,24 @@ public class Game {
 	    netman.send("SRETRACT." + pos);
 	}
 	
+	public void regenerate(int pos)
+	{
+		ehand.add(egrave.remove(pos));
+		netman.send("REGENERATE." + pos);
+	}
+	
+	public void sregenerate(int pos)
+	{
+		hand.add(grave.remove(pos));
+		netman.send("SREGENERATE." + pos);
+	}
+	
 	public void toggle(int pos)
 	{
 		field.getCard(pos).setVisible(true);
 		field.getCard(pos).toggleAttackPosition();
 		netman.send("TOGGLE."+pos);
 		field.updatePosition();
-		
 	}
 	
 	public void damage(int amount)
@@ -681,5 +692,17 @@ public class Game {
 	{
 	    int pos = Integer.parseInt(param);
 	    ehand.add(efield.remove(pos));
+	}
+	
+	public void exeREGENERATE(String param)
+	{
+		int pos = Integer.parseInt(param);
+		hand.add(grave.remove(pos));
+	}
+	
+	public void exeSREGENERATE(String param)
+	{
+		int pos = Integer.parseInt(param);
+		ehand.add(egrave.remove(pos));
 	}
 }

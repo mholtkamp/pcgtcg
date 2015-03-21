@@ -2,6 +2,7 @@ package com.pcgtcg.card;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pcg.pcgtcg;
+import com.pcgtcg.game.Game;
 
 public class CK extends Card {
 	
