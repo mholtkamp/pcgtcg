@@ -37,7 +37,9 @@ public class Game {
 	
 	public Texture blackTex;
 	public BitmapFont font;
-	
+	public Texture staticBgTex;
+	public Texture scrollingBgTex;
+	private float scrollX = 0.0f;
 	
 	//Player + Locations
 	public Player player;
@@ -65,14 +67,15 @@ public class Game {
 	
 	public Game()
 	{
-		player = new Player();
+		player  = new Player();
 		eplayer = new Player();
-		hand = new Hand(true);
-		ehand = new Hand(false);
-		field = new Field(true);
-		efield = new Field(false);
-		grave = new Grave(true);
-		egrave = new Grave(false);
+		hand    = new Hand(true);
+		ehand   = new Hand(false);
+		field   = new Field(true);
+		efield  = new Field(false);
+		grave   = new Grave(true);
+		egrave  = new Grave(false);
+		
 		hasSummoned = false;
 		hasWon = false;
 		gameOver = false;
@@ -81,8 +84,11 @@ public class Game {
 		quitOpt = new Option("X",760,440);
 		quitOpt.setWidth(40);
 		endOpt.setValid(false);
-		blackTex = pcgtcg.manager.get("data/blackTex.png",Texture.class);
-		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
+		
+		blackTex       = pcgtcg.manager.get("data/blackTex.png",Texture.class);
+		font           = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
+		staticBgTex    = pcgtcg.manager.get("data/staticbg.png", Texture.class);
+		scrollingBgTex = pcgtcg.manager.get("data/scrollingbg.png",Texture.class);
 		animationQueue = new AnimationQueue();
 	}
 	
@@ -122,7 +128,12 @@ public class Game {
 	
 	public void update()
 	{
-
+	    // Update scrolling background
+	    scrollX += Gdx.graphics.getDeltaTime() * 20.0f;
+	    if (scrollX >= pcgtcg.SCREEN_WIDTH*2)
+	        scrollX -= pcgtcg.SCREEN_WIDTH*2;
+	    
+	    // Update all animations
 	    animationQueue.update();
 	    
 		if(inGameState == INIT_STATE)
@@ -264,6 +275,11 @@ public class Game {
 	
 	public void render(SpriteBatch batch)
 	{
+	    // Render Backgrounds
+	    batch.draw(scrollingBgTex, scrollX, 0);
+	    batch.draw(scrollingBgTex, scrollX - pcgtcg.SCREEN_WIDTH*2, 0);
+	    batch.draw(staticBgTex, 0, 0);
+	    
 		//Render Locations
 		hand.render(batch);
 		ehand.render(batch);
@@ -280,9 +296,9 @@ public class Game {
 		
 		//Render Text
 		font.setScale(1.5f);
-		font.setColor(0f, 0f, 1f, 1f);
-		font.draw(batch, ""+player.life, 60, 220);
 		font.setColor(1f,0f,0f,1f);
+		font.draw(batch, ""+player.life, 60, 220);
+		font.setColor(0f, 0f, 1f, 1f);
 		font.draw(batch, ""+eplayer.life, 60, 295);
 		if(inGameState == HAND_OPT_STATE)
 		{
