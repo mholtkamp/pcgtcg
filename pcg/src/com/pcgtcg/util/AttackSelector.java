@@ -92,6 +92,12 @@ public class AttackSelector extends OptionSelector {
 				card.setHasAttacked(true);
 				pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
 				
+				// Show toast for attack and notify opponent
+				HistoryToast toast = new HistoryToast(true);
+		        toast.text = "" + card.getValue() + " ATK " + target.getValue();
+		        pcgtcg.game.history.add(toast);
+		        
+		        pcgtcg.game.netman.send("NOTIFY." + card.getValue() + " ATK " + target.getValue());
 				
 			}
 			else if(cancelOption.isTouched(tx, ty))

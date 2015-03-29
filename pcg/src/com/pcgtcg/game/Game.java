@@ -18,7 +18,9 @@ import com.pcgtcg.util.AnimationQueue;
 import com.pcgtcg.util.AttackSelector;
 import com.pcgtcg.util.FieldSelector;
 import com.pcgtcg.util.HandSelector;
+import com.pcgtcg.util.HistoryQueue;
 import com.pcgtcg.util.Option;
+import com.pcgtcg.util.HistoryToast;
 import com.pcgtcg.util.TributeSelector;
 
 public class Game {
@@ -64,6 +66,7 @@ public class Game {
 	public int firstTurn;
 	public NetworkManager netman;
 	public AnimationQueue animationQueue;
+	public HistoryQueue history;
 	
 	public Game()
 	{
@@ -90,6 +93,7 @@ public class Game {
 		staticBgTex    = pcgtcg.manager.get("data/staticbg.png", Texture.class);
 		scrollingBgTex = pcgtcg.manager.get("data/scrollingbg.png",Texture.class);
 		animationQueue = new AnimationQueue();
+		history        = new HistoryQueue();
 	}
 	
 	public Game(boolean isHost)
@@ -270,7 +274,9 @@ public class Game {
 		{
 			netman.close();
 			Gdx.app.exit();
-		}	
+		}
+		
+		history.update();
 	}
 	
 	public void render(SpriteBatch batch)
@@ -300,6 +306,11 @@ public class Game {
 		font.draw(batch, ""+player.life, 60, 220);
 		font.setColor(0f, 0f, 1f, 1f);
 		font.draw(batch, ""+eplayer.life, 60, 295);
+		
+		// Render history last to occlude other stuff besides
+		// the options selectors below.
+		history.render(batch);
+		
 		if(inGameState == HAND_OPT_STATE)
 		{
 			handSel.render(batch);
@@ -415,6 +426,9 @@ public class Game {
 		}
 		hasSummoned = true;
 		netman.send("SUMMON." + c.getValue());
+		HistoryToast toast = new HistoryToast(true);
+		toast.text = "Summon " + c.getValue();
+		history.add(toast);
 	}
 	
 	public void set(Card c)
@@ -456,6 +470,13 @@ public class Game {
                     
                     // Activate Effect
                     //hand.getCard(i).activate();
+                    
+                    HistoryToast toast = new HistoryToast(true);
+                    toast.text = "Activate " + c.getValue();
+                    history.add(toast);
+                    
+                    netman.send("NOTIFY." + "Activate " + c.getValue());
+                    
                     c.activate();
                     
                     break;
@@ -625,6 +646,10 @@ public class Game {
 				break;
 			}
 		}
+		
+		HistoryToast toast = new HistoryToast(false);
+		toast.text = "Summon " + cardVal;
+		history.add(toast);
 	}
 	
 	public void exeSET(String param)
@@ -720,5 +745,14 @@ public class Game {
 	{
 		int pos = Integer.parseInt(param);
 		ehand.add(egrave.remove(pos));
+	}
+	
+	public void exeNOTIFY(String param)
+	{
+	    // This network action is only used
+	    // to provide a history toast.
+	    HistoryToast toast = new HistoryToast(false);
+        toast.text = param;
+        history.add(toast);
 	}
 }

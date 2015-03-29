@@ -181,6 +181,10 @@ public class NetworkManager implements Runnable{
 				{
 					pcgtcg.game.exeSREGENERATE(params.replaceAll("[.]", ""));
 				}
+				else if (com.equals("NOTIFY"))
+				{
+				    pcgtcg.game.exeNOTIFY(params.replaceAll("[.]", ""));
+				}
 			}
 		}
 		catch(Exception ex)
