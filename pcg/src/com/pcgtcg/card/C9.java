@@ -14,8 +14,8 @@ public class C9 extends Card {
 		tributeValue = 1;
 		tributeCost = 1;
 		
-		activeDescriptor = "While face-up, prevents all other friendly summoned cards from being attacked (except other 9s).";
-		passiveDescriptor = "";
+		activeDescriptor = "";
+		passiveDescriptor = "While face-up, prevents all other friendly summoned \ncards from being attacked (except other 9s).";
 	}
 
 	public void activate()

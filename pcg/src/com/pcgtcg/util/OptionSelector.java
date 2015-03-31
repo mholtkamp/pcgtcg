@@ -9,19 +9,22 @@ import com.pcg.pcgtcg;
 public abstract class OptionSelector {
 	
 	protected LinkedList<Option> options;
-	protected Texture grayTex;
+	protected Texture whiteTex;
 	protected Texture blackTex;
 	
 	public OptionSelector()
 	{
-		grayTex = pcgtcg.manager.get("data/grayTex.png",Texture.class);
-		blackTex = pcgtcg.manager.get("data/blackTex.png",Texture.class);
+		whiteTex = pcgtcg.manager.get("data/whiteTex.png",Texture.class);
 		options = new LinkedList<Option>();
 	}
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(grayTex,0,0,pcgtcg.SCREEN_WIDTH,pcgtcg.SCREEN_HEIGHT);
-		batch.draw(blackTex, 0, 0, 174, pcgtcg.SCREEN_HEIGHT);
+	    batch.setColor(0f, 0f, 0f, 0.4f);
+		batch.draw(whiteTex,0,0,pcgtcg.SCREEN_WIDTH,pcgtcg.SCREEN_HEIGHT);
+		batch.setColor(0f, 0f, 0f, 1f);
+		batch.draw(whiteTex, 0, 0, 174, pcgtcg.SCREEN_HEIGHT);
+		batch.setColor(1f, 1f, 1f, 1f);
+		
 		for(int i = 0; i < options.size(); i++)
 		{
 			options.get(i).render(batch);

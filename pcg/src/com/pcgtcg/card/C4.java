@@ -13,8 +13,8 @@ public class C4 extends Card {
 		value = '4';
 		power = 4;
 		tributeValue = 1;
-		activeDescriptor = "Natural power doubles when the sum of the natural powers of the enemy field are a multiple of 4.";
-		passiveDescriptor = "";
+		activeDescriptor = "";
+		passiveDescriptor = "Natural power doubles when the sum of the \nnatural powers of the enemy field are a multiple of 4.";
 	}
 
 	public void activate()

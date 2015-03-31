@@ -16,7 +16,7 @@ public class CT extends Card {
 		tributeCost = 1;
 		hasActive = true;
 		
-		activeDescriptor = "Return a selected card from your grave to your hand.";
+		activeDescriptor = "Return a selected card from your grave to \nyour hand.";
 		passiveDescriptor = "";
 	}
 

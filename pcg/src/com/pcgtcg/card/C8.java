@@ -15,7 +15,7 @@ public class C8 extends Card {
 		tributeCost = 1;
 		
         activeDescriptor = "";
-        passiveDescriptor = "Deal battle damage when attacking cards in defense mode.";
+        passiveDescriptor = "Deal battle damage when attacking cards in \ndefense mode.";
 	}
 
 	public void activate()

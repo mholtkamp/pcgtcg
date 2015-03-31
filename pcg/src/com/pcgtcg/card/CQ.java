@@ -16,7 +16,7 @@ public class CQ extends Card {
 		tributeCost = 2;
 		hasActive = true;
 		
-		activeDescriptor = "Send all cards on both players' fields to their respective graves.";
+		activeDescriptor = "Send all cards on both players' fields to their \nrespective graves.";
 		passiveDescriptor = "";
 	}
 

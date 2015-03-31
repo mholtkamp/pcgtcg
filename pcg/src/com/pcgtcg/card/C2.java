@@ -14,7 +14,7 @@ public class C2 extends Card {
 		power = 2;
 		tributeValue = 1;
 		hasActive = true;
-		activeDescriptor = "Return a summoned card to owner's hand.";
+		activeDescriptor = "Return a summoned card to its owner's hand.";
 		passiveDescriptor = "";
 	}
 

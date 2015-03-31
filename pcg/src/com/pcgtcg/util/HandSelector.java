@@ -1,6 +1,9 @@
 package com.pcgtcg.util;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
@@ -13,6 +16,7 @@ public class HandSelector extends OptionSelector {
 	private Option setOption;
 	private Option cancelOption;
 	private Card card;
+	private Texture whiteTex;
 	
 	public HandSelector(Card card)
 	{
@@ -35,7 +39,9 @@ public class HandSelector extends OptionSelector {
 		{
 			summonOption.setValid(false);
 			setOption.setValid(false);
-		}	
+		}
+		
+		whiteTex = pcgtcg.manager.get("data/whiteTex.png", Texture.class);
 	}
 	
 	public void update()
@@ -87,7 +93,43 @@ public class HandSelector extends OptionSelector {
 		}
 	}
 	
-	
+	public void render(SpriteBatch batch)
+	{
+	    super.render(batch);
+	    
+	    BitmapFont font = pcgtcg.game.font;
+	    
+	    batch.draw(card.getTexture(), 380, 285, 130, 165);
+	    batch.draw(whiteTex,          174, 0, 626, 260);
+	    
+	    font.setColor(0f, 0f, 0f, 1f);
+	    font.setScale(0.8f);
+	    font.draw(batch, "Power: " + card.getNaturalPower(), 210, 230);
+	    font.draw(batch, "Tribute Cost: " + card.getTributeCost(), 210, 200);
+	    
+	    String active = card.getActiveDescriptor();
+	    String passive = card.getPassiveDescriptor();
+	    
+	    if (!active.equals(""))
+	    {
+	        String[] splitActives = active.split("[\n]", 2);
+	        
+	        font.draw(batch, "Active: " + splitActives[0], 210, 150);
+	        
+	        if (splitActives.length >= 2)
+	            font.draw(batch, splitActives[1], 210, 120);
+	    }
+	    if (!passive.equals(""))
+	    {
+            String[] splitPassives = passive.split("[\n]", 2);
+            
+            font.draw(batch, "Passive: " + splitPassives[0], 210, 70);
+            
+            if (splitPassives.length >= 2)
+                font.draw(batch, splitPassives[1], 210, 40);
+	    }
+	    
+	}
 	
 
 }
