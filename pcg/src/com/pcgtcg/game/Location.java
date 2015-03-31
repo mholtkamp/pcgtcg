@@ -44,6 +44,7 @@ public abstract class Location {
 	public Card remove(int i)
 	{
 		Card ret = cards.remove(i);
+		ret.ClearStatus();
 		updatePosition();
 		return ret;
 	}

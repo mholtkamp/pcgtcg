@@ -59,11 +59,7 @@ public class FieldSelector extends OptionSelector {
 					pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
 					
 		            // Show toast for attack and notify opponent
-	                HistoryToast toast = new HistoryToast(true);
-	                toast.text = "" + card.getValue() + " DIR ATK" ;
-	                pcgtcg.game.history.add(toast);
-	                
-	                pcgtcg.game.netman.send("NOTIFY." + card.getValue() + " DIR ATK");
+	                pcgtcg.game.addToast("" + card.getValue() + " DIR ATK");
 				}
 				else
 				{

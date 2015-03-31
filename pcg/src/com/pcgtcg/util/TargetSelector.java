@@ -3,6 +3,7 @@ package com.pcgtcg.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
@@ -84,7 +85,23 @@ public class TargetSelector extends OptionSelector {
             
             if (targetOption.isTouched(tx, ty))
             {
-                //card.activateTarget(int numTargets, Card[] targets);
+                // Call the activateTaget handler.
+                // This is currently hardcoded to 1.
+                // TODO: Unhardcode to support multiple targets
+                Card[] targets = new Card[1];
+                targets[0] = target;
+                card.activateTarget(1, targets);
+                
+                // Remove card from hand after activation effect
+                Hand hand = pcgtcg.game.hand;
+                for(int i = 0; i < hand.getSize(); i++)
+                {
+                    if(hand.getCard(i) == card)
+                    {
+                        pcgtcg.game.sdiscard(i);
+                    }
+                }
+                pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
             }
             else if(cancelOption.isTouched(tx, ty))
             {
@@ -162,6 +179,76 @@ public class TargetSelector extends OptionSelector {
     
     public void render(SpriteBatch batch)
     {
+        super.render(batch);
         
+        switch(domain)
+        {
+        case FIELD_DOMAIN:
+            Field field = pcgtcg.game.field;
+            Field efield = pcgtcg.game.efield;
+            if (flagFriendly)
+            {
+                for (int i = 0; i < field.getSize(); i++)
+                {
+                    field.getCard(i).render(batch);
+                    if(field.getCard(i) == target)
+                    {
+                        Rectangle cbox = field.getCard(i).getBox();
+                        batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
+                    }
+                }
+            }
+            if (flagEnemy)
+            {
+                for (int i = 0; i < efield.getSize(); i++)
+                {
+                    efield.getCard(i).render(batch);
+                    if(efield.getCard(i) == target)
+                    {
+                        Rectangle cbox = efield.getCard(i).getBox();
+                        batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
+                    }
+                }
+            }
+            break;
+            
+        case HAND_DOMAIN:
+            Hand hand = pcgtcg.game.hand;
+            Hand ehand = pcgtcg.game.ehand;
+            
+            if (flagFriendly)
+            {
+                for (int i = 0; i < hand.getSize(); i++)
+                {
+                    hand.getCard(i).render(batch);
+                    if(hand.getCard(i) == target)
+                    {
+                        Rectangle cbox = hand.getCard(i).getBox();
+                        batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
+                    }
+                }
+            }
+            if (flagEnemy)
+            {
+                for (int i = 0; i < ehand.getSize(); i++)
+                {
+                    ehand.getCard(i).render(batch);
+                    if(ehand.getCard(i) == target)
+                    {
+                        Rectangle cbox = ehand.getCard(i).getBox();
+                        batch.draw(blueTex,cbox.x,cbox.y,cbox.width,cbox.height);
+                    }
+                }
+            }
+            break;
+            
+        case GRAVE_DOMAIN:
+            // TODO
+            break;
+        case DECK_DOMAIN:
+            // TODO
+            break;
+            
+        }
     }
 }

@@ -21,6 +21,7 @@ import com.pcgtcg.util.HandSelector;
 import com.pcgtcg.util.HistoryQueue;
 import com.pcgtcg.util.Option;
 import com.pcgtcg.util.HistoryToast;
+import com.pcgtcg.util.TargetSelector;
 import com.pcgtcg.util.TributeSelector;
 
 public class Game {
@@ -28,6 +29,7 @@ public class Game {
 	public final int NULL_STATE = -1, INIT_STATE = 0, DRAW_STATE = 1, PLAY_STATE = 2, ACCEPT_STATE = 3; 
 	public final int HAND_OPT_STATE = 4, FIELD_OPT_STATE = 5, TRIB_OPT_STATE = 6, ATT_TARGET_STATE = 7;
 	public final int GAME_OVER_STATE = 8;
+	public final int SELECT_TARGET_STATE = 9;
 	public final int ONE_STATE = 1, TWO_STATE = 2;
 	public int turnState;
 	public int inGameState;
@@ -60,6 +62,7 @@ public class Game {
 	public TributeSelector tribSel;
 	public FieldSelector fieldSel;
 	public AttackSelector attackSel;
+	public TargetSelector targetSel;
 	
 	public boolean hasSummoned;
 	public int playerNum;
@@ -269,6 +272,10 @@ public class Game {
 		{
 			attackSel.update();
 		}
+		else if (inGameState == SELECT_TARGET_STATE)
+		{
+		    targetSel.update();
+		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
 		{
@@ -327,6 +334,10 @@ public class Game {
 		{
 			attackSel.render(batch);
 		}
+		else if (inGameState == SELECT_TARGET_STATE)
+		{
+		    targetSel.render(batch);
+		}
 		else if(inGameState == GAME_OVER_STATE)
 		{
 			batch.draw(blackTex, 0, 0, pcgtcg.SCREEN_WIDTH, pcgtcg.SCREEN_HEIGHT);
@@ -344,6 +355,15 @@ public class Game {
 		netman.close();
 		pcgtcg.game = null;
 		pcgtcg.gameState = pcgtcg.MENU_STATE;
+	}
+	
+	public void addToast(String text)
+	{
+	    HistoryToast toast = new HistoryToast(true);
+        toast.text = text;
+        history.add(toast);
+        
+        netman.send("NOTIFY." + text);
 	}
 	
 	
@@ -426,9 +446,7 @@ public class Game {
 		}
 		hasSummoned = true;
 		netman.send("SUMMON." + c.getValue());
-		HistoryToast toast = new HistoryToast(true);
-		toast.text = "Summon " + c.getValue();
-		history.add(toast);
+		addToast("Summon " + c.getValue());
 	}
 	
 	public void set(Card c)
@@ -463,19 +481,13 @@ public class Game {
                 {   
                     // Discard if not a special summon active
                     if (c.getValue() != '3' &&
-                        c.getValue() != 'A')
+                        c.getValue() != 'A' &&
+                        (!c.hasActivateTarget()))
                     {
                         sdiscard(i);
                     }
                     
-                    // Activate Effect
-                    //hand.getCard(i).activate();
-                    
-                    HistoryToast toast = new HistoryToast(true);
-                    toast.text = "Activate " + c.getValue();
-                    history.add(toast);
-                    
-                    netman.send("NOTIFY." + "Activate " + c.getValue());
+                    addToast("Activate " + c.getValue());
                     
                     c.activate();
                     
@@ -646,10 +658,6 @@ public class Game {
 				break;
 			}
 		}
-		
-		HistoryToast toast = new HistoryToast(false);
-		toast.text = "Summon " + cardVal;
-		history.add(toast);
 	}
 	
 	public void exeSET(String param)
@@ -754,5 +762,21 @@ public class Game {
 	    HistoryToast toast = new HistoryToast(false);
         toast.text = param;
         history.add(toast);
+	}
+	
+	public void exeMODPOWER(String param)
+	{
+        int pos = Integer.parseInt(param.split("[.]",2)[0]);
+        int powerMod = Integer.parseInt(param.split("[.]",2)[1]);
+        
+        field.getCard(pos).modifyPower(powerMod);
+	}
+	
+	public void exeSMODPOWER(String param)
+	{
+	    int pos = Integer.parseInt(param.split("[.]",2)[0]);
+	    int powerMod = Integer.parseInt(param.split("[.]",2)[1]);
+	    
+	    efield.getCard(pos).modifyPower(powerMod);
 	}
 }

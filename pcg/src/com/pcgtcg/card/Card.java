@@ -12,8 +12,10 @@ public abstract class Card implements Touchable , Animated {
 	
 	protected char value;
 	protected int power;
+	protected int powerModifier;
 	protected int tributeValue;
 	protected boolean hasActive;
+	protected boolean hasActivateTarget;
 	protected int tributeCost;
 	protected boolean attackPosition;
 	protected boolean visible;
@@ -23,8 +25,13 @@ public abstract class Card implements Touchable , Animated {
 	protected Texture backTex;
 	protected Texture swordTex;
 	protected Texture shieldTex;
+	protected Texture whiteTex;
 	
 	private Rectangle box;
+	
+	// Power Modification variables for pulsating effect
+	private static final float POWER_MOD_PULSE_TIME = 0.5f;
+	private float powerModTime;
 	
 	public Card()
 	{
@@ -35,12 +42,16 @@ public abstract class Card implements Touchable , Animated {
 		box.height = 150;
 		tributeCost = 0;
 		hasActive = false;
+		hasActivateTarget = false;
 		hasAttacked = false;
 		visible = true;
 		attackPosition = true;
+		powerModifier = 0;
+		powerModTime = 0.0f;
 		backTex   = pcgtcg.manager.get("data/cardBackTex.png", Texture.class);
 		swordTex  = pcgtcg.manager.get("data/sword.png",Texture.class);
 		shieldTex = pcgtcg.manager.get("data/shield.png",Texture.class);
+		whiteTex  = pcgtcg.manager.get("data/whiteTex.png", Texture.class);
 	}
 	
 	public void render(SpriteBatch batch)
@@ -66,10 +77,35 @@ public abstract class Card implements Touchable , Animated {
             batch.draw(shieldTex, box.x, box.y + box.height/4.0f, 64.0f, 64.0f);
             batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		}
+		
+		// Render Power Modification pulse effect
+		if (powerModifier > 0)
+		{
+		    powerModTime -= Gdx.graphics.getDeltaTime();
+		    if(powerModTime < 0.0f)
+		        powerModTime = POWER_MOD_PULSE_TIME;
+		    batch.setColor(0.7f, 1f, 0.7f, powerModTime/POWER_MOD_PULSE_TIME);
+		    batch.draw(whiteTex, box.x, box.y, box.width, box.height);
+		    batch.setColor(1f,1f,1f,1f);
+		}
+		else if (powerModifier < 0)
+		{
+            powerModTime -= Gdx.graphics.getDeltaTime();
+            if(powerModTime < 0.0f)
+                powerModTime = POWER_MOD_PULSE_TIME;
+            batch.setColor(1.0f, 0.7f, 0.7f, powerModTime/POWER_MOD_PULSE_TIME);
+            batch.draw(whiteTex, box.x, box.y, box.width, box.height);
+            batch.setColor(1f,1f,1f,1f);
+		}
 	}
 
 	public abstract void summon();
 	public abstract void activate();
+	
+	public void activateTarget(int numTargets, Card[] targets)
+	{
+	    System.out.println("activateTarget invoked on card without an implementation.\n");
+	}
 	
 	public char getValue()
 	{
@@ -113,7 +149,12 @@ public abstract class Card implements Touchable , Animated {
 	
 	public int getPower()
 	{
-		return power;
+		return power + powerModifier;
+	}
+	
+	public void modifyPower(int modPower)
+	{
+	    powerModifier += modPower;
 	}
 	
 	public int getTributeValue()
@@ -147,6 +188,11 @@ public abstract class Card implements Touchable , Animated {
 		return hasActive;
 	}
 	
+	public boolean hasActivateTarget()
+	{
+	    return hasActivateTarget;
+	}
+	
 	public int getTributeCost()
 	{
 		return tributeCost;
@@ -156,4 +202,11 @@ public abstract class Card implements Touchable , Animated {
 	{
 		return tex;
 	}
+	
+    public void ClearStatus()
+    {
+        attackPosition = true;
+        visible = true;
+        powerModifier = 0;
+    }
 }

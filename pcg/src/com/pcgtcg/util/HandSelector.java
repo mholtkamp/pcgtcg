@@ -81,7 +81,8 @@ public class HandSelector extends OptionSelector {
 			else if (activateOption.isTouched(tx, ty))
 			{
 			    pcgtcg.game.activate(card);
-			    pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
+			    if (!card.hasActivateTarget())
+			        pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
 			}
 		}
 	}

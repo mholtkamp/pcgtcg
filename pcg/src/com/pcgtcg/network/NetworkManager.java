@@ -185,6 +185,14 @@ public class NetworkManager implements Runnable{
 				{
 				    pcgtcg.game.exeNOTIFY(params.replaceAll("[.]", ""));
 				}
+				else if (com.equals("MODPOWER"))
+				{
+				    pcgtcg.game.exeMODPOWER(params);
+				}
+                else if (com.equals("SMODPOWER"))
+                {
+                    pcgtcg.game.exeSMODPOWER(params);
+                }
 			}
 		}
 		catch(Exception ex)
