@@ -12,6 +12,9 @@ public class C7 extends Card {
 		value = '7';
 		power = 7;
 		tributeValue = 1;
+		
+		activeDescriptor = "";
+		passiveDescriptor = "";
 	}
 
 	public void activate()

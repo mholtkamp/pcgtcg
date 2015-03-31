@@ -15,6 +15,8 @@ public class C3 extends Card {
 		power = 3;
 		tributeValue = 1;
 		hasActive = true;
+		activeDescriptor = "If there is an 8 or higher on the enemy field, special summon this card.";
+		passiveDescriptor = "When summoned, lower the power of all cards on the enemy field by 3.";
 	}
 
 	public void activate()

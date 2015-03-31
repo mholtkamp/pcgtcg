@@ -13,6 +13,9 @@ public class CJ extends Card {
 		power = 13;
 		tributeValue = 1;
 		tributeCost = 2;
+		
+		activeDescriptor = "Retrieve a Q, 10, or 5 from your deck.";
+		passiveDescriptor = "Immune to Q's active.";
 	}
 
 	public void activate()

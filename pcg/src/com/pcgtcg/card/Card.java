@@ -20,6 +20,8 @@ public abstract class Card implements Touchable , Animated {
 	protected boolean attackPosition;
 	protected boolean visible;
 	protected boolean hasAttacked;
+	protected String activeDescriptor;
+	protected String passiveDescriptor;
 	protected String location;
 	protected Texture tex;
 	protected Texture backTex;
@@ -152,6 +154,11 @@ public abstract class Card implements Touchable , Animated {
 		return power + powerModifier;
 	}
 	
+	public int getNaturalPower()
+	{
+	    return power;
+	}
+	
 	public void modifyPower(int modPower)
 	{
 	    powerModifier += modPower;
@@ -207,6 +214,17 @@ public abstract class Card implements Touchable , Animated {
     {
         attackPosition = true;
         visible = true;
+        hasAttacked = false;
         powerModifier = 0;
+    }
+    
+    public String getActiveDescriptor()
+    {
+        return activeDescriptor;
+    }
+    
+    public String getPassiveDescriptor()
+    {
+        return passiveDescriptor;
     }
 }

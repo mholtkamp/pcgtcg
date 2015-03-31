@@ -15,6 +15,9 @@ public class CA extends Card {
 		tributeValue = 1;
 		tributeCost = 3;
 		hasActive = true;
+		
+		activeDescriptor = "Remove from game J/Q/K from your grave to special summon this card.";
+		passiveDescriptor = "";
 	}
 
 	public void activate()

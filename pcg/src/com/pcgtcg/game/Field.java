@@ -2,6 +2,7 @@ package com.pcgtcg.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.pcg.pcgtcg;
+import com.pcgtcg.card.Card;
 import com.pcgtcg.util.AnimationEvent;
 
 public class Field  extends Location {
@@ -65,5 +66,18 @@ public class Field  extends Location {
 		}
 	}
 
+	
+	// Override this to not clear card status
+    public boolean add(Card c)
+    {
+        if(cards.size() < maxSize)
+        {
+            cards.add(c);
+            updatePosition();
+            return true;
+        }
+        else
+            return false;
+    }
 
 }

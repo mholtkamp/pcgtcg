@@ -59,22 +59,6 @@ public class Hand extends Location {
 			}
 		}
 	}
-	
-   public boolean add(Card c)
-    {
-        if(cards.size() < maxSize)
-        {
-            c.setAttackPosition(true);
-            c.setVisible(true);
-            c.setHasAttacked(false);
-
-            cards.add(c);
-            updatePosition();
-            return true;
-        }
-        else
-            return false;
-    }
 	   
 	public void render(SpriteBatch batch)
 	{

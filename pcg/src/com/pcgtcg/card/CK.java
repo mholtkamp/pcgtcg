@@ -14,6 +14,9 @@ public class CK extends Card {
 		power = 17;
 		tributeValue = 1;
 		tributeCost = 2;
+		
+		activeDescriptor = "If your life is less than the enemy's life, summoning cards cost one less tribute this turn (stacks).";
+		passiveDescriptor = "";
 	}
 
 	public void activate()

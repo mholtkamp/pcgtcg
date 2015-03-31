@@ -12,6 +12,9 @@ public class C6 extends Card {
 		value = '6';
 		power = 6;
 		tributeValue = 2;
+		
+		activeDescriptor = "";
+		passiveDescriptor = "Counts as two tributes.";
 	}
 
 	public void activate()

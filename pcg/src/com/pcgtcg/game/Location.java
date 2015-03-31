@@ -34,6 +34,9 @@ public abstract class Location {
 		if(cards.size() < maxSize)
 		{
 			cards.add(c);
+			
+			// Clear status when changing location
+			c.ClearStatus();
 			updatePosition();
 			return true;
 		}
@@ -44,7 +47,6 @@ public abstract class Location {
 	public Card remove(int i)
 	{
 		Card ret = cards.remove(i);
-		ret.ClearStatus();
 		updatePosition();
 		return ret;
 	}

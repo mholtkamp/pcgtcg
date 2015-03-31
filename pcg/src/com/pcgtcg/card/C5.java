@@ -17,6 +17,9 @@ public class C5 extends Card {
 		tributeValue = 1;
 		hasActive = true;
 		hasActivateTarget = true;
+		
+		activeDescriptor = "Add +5 power to a summoned card on your field.";
+		passiveDescriptor = "Immune to Q's active.";
 	}
 
 	public void activate()
