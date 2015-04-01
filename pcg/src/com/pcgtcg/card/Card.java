@@ -29,7 +29,8 @@ public abstract class Card implements Touchable , Animated {
 	protected Texture shieldTex;
 	protected Texture whiteTex;
 	
-	private Rectangle box;
+	protected Rectangle box;
+	protected boolean isOwn;
 	
 	// Power Modification variables for pulsating effect
 	private static final float POWER_MOD_PULSE_TIME = 0.5f;
@@ -37,6 +38,7 @@ public abstract class Card implements Touchable , Animated {
 	
 	public Card()
 	{
+	    isOwn = false;
 		box = new Rectangle();
 		box.x = 50;
 		box.y = 50;
@@ -208,6 +210,11 @@ public abstract class Card implements Touchable , Animated {
 	public Texture getTexture()
 	{
 		return tex;
+	}
+	
+	public void setIsOwn(boolean isOwn)
+	{
+	    this.isOwn = isOwn;
 	}
 	
     public void ClearStatus()

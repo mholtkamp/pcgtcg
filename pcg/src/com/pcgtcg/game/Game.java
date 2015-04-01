@@ -109,7 +109,9 @@ public class Game {
 			netman = new Server();
 			(new Thread(netman)).start();
 			player.deck.randomizeDeck();
+			player.deck.setOwn(true);
 			eplayer.deck.randomizeDeck();
+			eplayer.deck.setOwn(false);
 			player.deck.setCardBoxes(true);
 			eplayer.deck.setCardBoxes(false);
 			Random rand = new Random();
@@ -444,6 +446,10 @@ public class Game {
 				break;
 			}
 		}
+		
+		// Invoke the "OnSummon" callback method
+		c.summon();
+		
 		hasSummoned = true;
 		netman.send("SUMMON." + c.getValue());
 		addToast("Summon " + c.getValue());
@@ -589,6 +595,7 @@ public class Game {
 		for(int i = 0; i < params.length(); i++)
 			eplayer.deck.add(params.charAt(i));
 		eplayer.deck.setCardBoxes(false);
+		eplayer.deck.setOwn(false);
 	}
 	
 	public void exeDECKTWO(String params)
@@ -596,6 +603,7 @@ public class Game {
 		for(int i = 0; i < params.length(); i++)
 			player.deck.add(params.charAt(i));
 		player.deck.setCardBoxes(true);
+		player.deck.setOwn(true);
 	}
 	
 	public void exeDRAW()

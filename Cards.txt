@@ -1,13 +1,13 @@
 =====
 = 2 =
 =====
-[-] Activate: Return a summoned card to owner's hand.
+[x] Activate: Return a summoned card to owner's hand.
  
 =====
 = 3 =
 =====
 [x] Activate: Special summon this card if there is an 8 or higher on enemy field.
-[ ] OnSummon: Reduces power of all enemy cards by 3. 
+[x] OnSummon: Reduces power of all enemy cards by 3. 
 =====
 = 4 =
 =====

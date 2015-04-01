@@ -204,4 +204,12 @@ public class Deck {
 				batch.draw(backTex,EPOS_X,EPOS_Y,EPOS_WIDTH,EPOS_HEIGHT);
 		}
 	}
+	
+	public void setOwn(boolean isOwn)
+	{
+	    for (int  i = 0; i < curCards.size(); i++)
+	    {
+	        curCards.get(i).setIsOwn(isOwn);
+	    }
+	}
 }

@@ -85,14 +85,10 @@ public class TargetSelector extends OptionSelector {
             
             if (targetOption.isTouched(tx, ty))
             {
-                // Call the activateTaget handler.
-                // This is currently hardcoded to 1.
-                // TODO: Unhardcode to support multiple targets
-                Card[] targets = new Card[1];
-                targets[0] = target;
-                card.activateTarget(1, targets);
-                
-                // Remove card from hand after activation effect
+                // Remove card from hand first.
+                // Removing the card first is important for 2's active
+                // or it could possibly cause a position glitch if 
+                // a card is returned to your own hand.
                 Hand hand = pcgtcg.game.hand;
                 for(int i = 0; i < hand.getSize(); i++)
                 {
@@ -101,6 +97,14 @@ public class TargetSelector extends OptionSelector {
                         pcgtcg.game.sdiscard(i);
                     }
                 }
+                
+                // Call the activateTaget handler.
+                // This is currently hardcoded to 1.
+                // TODO: Unhardcode to support multiple targets
+                Card[] targets = new Card[1];
+                targets[0] = target;
+                card.activateTarget(1, targets);
+                
                 pcgtcg.game.inGameState = pcgtcg.game.PLAY_STATE;
             }
             else if(cancelOption.isTouched(tx, ty))

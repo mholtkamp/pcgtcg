@@ -2,11 +2,14 @@ package com.pcgtcg.card;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pcg.pcgtcg;
+import com.pcgtcg.game.Field;
 import com.pcgtcg.game.Game;
 
 public class C3 extends Card {
 	
     private final int enemyMinPower = 8;
+    public static final int MOD_POWER = -3;
+    
 	public C3()
 	{
 		super();
@@ -47,7 +50,15 @@ public class C3 extends Card {
 	
 	public void summon()
 	{
-		
+		// Reduce the power of all the enemy's cards on the field
+	    Field efield = pcgtcg.game.efield;
+	    
+	    for (int i = 0; i < efield.getSize(); i++)
+	    {
+	        efield.getCard(i).modifyPower(-3);
+	        pcgtcg.game.netman.send("MODPOWER." + i + "." + MOD_POWER);
+            pcgtcg.game.addToast("" + efield.getCard(i).getValue() + " power " + MOD_POWER);
+	    }
 	}
 	
 	
