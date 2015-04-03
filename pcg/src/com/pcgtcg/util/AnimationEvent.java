@@ -88,6 +88,11 @@ public class AnimationEvent {
         cTime = sTime;
     }
     
+    public Animated getTarget()
+    {
+        return target;
+    }
+    
     public void setDestination(float endX,
                                float endY,
                                float endWidth,

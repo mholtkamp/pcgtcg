@@ -25,9 +25,14 @@ public class CQ extends Card {
 		Game game = pcgtcg.game;
 		
 		// Clear all cards on the enemy field.
-		while(game.efield.getSize() > 0)
+		for( int i = 0; i < game.efield.getSize(); i++)
 		{
-			game.kill(0);
+		    if (game.efield.getCard(i).getValue() != '5' &&
+		        game.efield.getCard(i).getValue() != 'J')
+		    {
+		        game.kill(i);
+		        i--;
+		    }
 		}
 		
 		// Clear all cards on own field.

@@ -11,13 +11,13 @@
 =====
 = 4 =
 =====
-[ ] Passive: Natural power doubles when the sum of the natural powers of the enemy field are a multiple of 4.
+[x] Passive: Natural power doubles when the sum of the natural powers of the enemy field are a multiple of 4.
 
 =====
 = 5 =
 =====
 [x] Activate: Add +5 power to a summoned card on your field.
-[ ] Passive: Immune to Q's active.
+[x] Passive: Immune to Q's active.
 
 =====
 = 6 =
@@ -31,7 +31,7 @@
 =====
 = 8 =
 =====
-[ ] Passive: Deal battle damage when attacking cards in defense mode.
+[x] Passive: Deal battle damage when attacking cards in defense mode.
 
 =====
 = 9 =
@@ -41,7 +41,7 @@
 =====
 = T =
 =====
-[-] Activate: Return a card from your grave to your hand.
+[x] Activate: Return a random card from your grave to your hand.
 
 =====
 = J =

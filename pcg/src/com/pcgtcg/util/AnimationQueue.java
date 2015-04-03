@@ -16,6 +16,19 @@ public class AnimationQueue {
     
     public void add(AnimationEvent newEvent)
     {
+        // Check if an event has already been added
+        // for the newEvent's target card.
+        for (int i = 0; i < queue.size(); i++)
+        {
+            if (queue.get(i).getTarget() == newEvent.getTarget())
+            {
+                // Remove the old animation event, 
+                // because this new animation event will
+                // control the target.
+                queue.remove(i);
+                i--;
+            }
+        }
         queue.add(newEvent);
     }
     

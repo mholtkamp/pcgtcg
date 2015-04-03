@@ -16,7 +16,7 @@ public class C4 extends Card {
 		power = 4;
 		tributeValue = 1;
 		activeDescriptor = "";
-		passiveDescriptor = "Natural power doubles when the sum of the \nnatural powers of the enemy field are a multiple of 4.";
+		passiveDescriptor = "Gains 4 power when the sum of the \nnatural powers of the enemy field are a multiple of 4.";
 	}
 
 	public void activate()
@@ -43,18 +43,18 @@ public class C4 extends Card {
 	        total += efield.getCard(i).getNaturalPower();
 	    }
 	    
-	    return (total%4 == 0) ? 8 : 4;
+	    return (total%4 == 0) ? (power + 4 + powerModifier) : (power + powerModifier);
 	}
 	
 	public void render(SpriteBatch batch)
 	{
 	    super.render(batch);
-	    
-	    if (getPower() == 8)
-	    {
-    	    batch.setColor(0.7f, 0.5f, 1.0f, 0.5f);
-    	    batch.draw(whiteTex, box.x, box.y, box.width, box.height);
-    	    batch.setColor(1f, 1f, 1f, 1f);
-	    }
+//## Uncomment for a visual cue of 4's effect
+//	    if (getPower() == 8)
+//	    {
+//    	    batch.setColor(0.7f, 0.5f, 1.0f, 0.5f);
+//    	    batch.draw(whiteTex, box.x, box.y, box.width, box.height);
+//    	    batch.setColor(1f, 1f, 1f, 1f);
+//	    }
 	}
 }

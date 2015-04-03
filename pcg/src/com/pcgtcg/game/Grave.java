@@ -56,17 +56,20 @@ public class Grave extends Location {
 	
 	public void render(SpriteBatch batch)
 	{
-		if(cards.size() > 0)
-		{
-		    // Draw the last two cards
-	        Card lastCard = cards.getLast();
-	        Rectangle lastBox = lastCard.getBox();
+	    // Rendering last 5 cards (this should allow 
+	    // all animations to be rendered when going to
+	    // the grave. I don't think rendering 4 extra card
+	    // textures every frame is a big performance hit, 
+	    // so I won't do any if checks to see if the card
+	    // is on the animation queue.
+	    for (int i = 5; i >= 1; i--)
+	    {
+	        if(cards.size() - i < 0)
+	            continue;
 	        
-	        if (cards.size() > 1)
-	        {
-	            batch.draw(cards.get(cards.size() - 2).getTexture(),box.x,box.y,box.width,box.height);
-	        }
-			batch.draw(lastCard.getTexture(),lastBox.x,lastBox.y,lastBox.width,lastBox.height);
-		}
+            Card graveCard = cards.get(cards.size() - i);
+            Rectangle cardBox = graveCard.getBox();
+            batch.draw(graveCard.getTexture(),cardBox.x,cardBox.y,cardBox.width,cardBox.height);
+	    }
 	}
 }

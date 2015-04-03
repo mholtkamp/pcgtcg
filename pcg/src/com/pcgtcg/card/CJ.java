@@ -15,7 +15,7 @@ public class CJ extends Card {
 		tributeCost = 2;
 		
 		activeDescriptor = "Retrieve a Q, 10, or 5 from your deck.";
-		passiveDescriptor = "Immune to Q's active.";
+		passiveDescriptor = "Immune to enemy Q's active.";
 	}
 
 	public void activate()
