@@ -42,6 +42,7 @@ public class AnimationQueue {
             if(queue.get(i).getStatus() == AnimationEvent.STATUS_FINISHED)
             {
                 queue.remove(i);
+                i--;
             }
             ret = true;
         }

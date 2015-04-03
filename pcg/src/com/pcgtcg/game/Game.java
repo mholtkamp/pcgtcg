@@ -615,7 +615,10 @@ public class Game {
             gameOver = true;
             inGameState = GAME_OVER_STATE;
         }
-		ehand.add(eplayer.deck.curCards.removeFirst());
+       else
+       {
+           ehand.add(eplayer.deck.curCards.removeFirst());
+       }	
 	}
 	
 	public void exeFDRAW()

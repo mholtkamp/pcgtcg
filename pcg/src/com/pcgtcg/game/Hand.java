@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
 import com.pcgtcg.util.AnimationEvent;
@@ -70,7 +71,10 @@ public class Hand extends Location {
 		else
 		{
 			for(int i = 0; i < cards.size(); i++)
-				batch.draw(backTex, EPOS_X + EPOS_SPACING*i, EPOS_Y, EPOS_WIDTH, EPOS_HEIGHT);
+			{
+			    Rectangle cBox = cards.get(i).getBox();
+				batch.draw(backTex, cBox.x, cBox.y, cBox.width, cBox.height);
+			}
 		}
 	}
 }
