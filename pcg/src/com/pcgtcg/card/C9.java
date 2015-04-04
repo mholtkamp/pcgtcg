@@ -13,14 +13,15 @@ public class C9 extends Card {
 		power = 9;
 		tributeValue = 1;
 		tributeCost = 1;
+		hasActive = true;
 		
-		activeDescriptor = "";
-		passiveDescriptor = "While face-up, prevents all other friendly summoned \ncards from being attacked (except other 9s).";
+		activeDescriptor = "Draw a card.";
+		passiveDescriptor = "Cannot be destroyed by battle.";
 	}
 
 	public void activate()
 	{
-		
+		pcgtcg.game.draw();
 	}
 	
 	public void summon()

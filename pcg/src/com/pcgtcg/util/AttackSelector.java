@@ -65,7 +65,8 @@ public class AttackSelector extends OptionSelector {
 					
 					// Moved this kill statement after damage calculation
 					// so that changing location doesn't reset the card status
-					pcgtcg.game.kill(targetPos);
+					if (target.getValue() != '9')
+					    pcgtcg.game.kill(targetPos);
 				}
 				else if(card.getPower() == target.getPower())
 				{
@@ -74,9 +75,13 @@ public class AttackSelector extends OptionSelector {
 						for(int i = 0; i < pcgtcg.game.field.getSize(); i++)
 						{
 							if(pcgtcg.game.field.getCard(i) == card)
-								pcgtcg.game.skill(i);
+							{
+							    if (card.getValue() != '9')
+							        pcgtcg.game.skill(i);
+							}
 						}
-						pcgtcg.game.kill(targetPos);
+	                    if (target.getValue() != '9')
+	                        pcgtcg.game.kill(targetPos);
 					}
 				}
 				else if(card.getPower() < target.getPower())
@@ -86,7 +91,10 @@ public class AttackSelector extends OptionSelector {
 						for(int i = 0; i < pcgtcg.game.field.getSize(); i++)
 						{
 							if(pcgtcg.game.field.getCard(i) == card)
-								pcgtcg.game.skill(i);
+							{
+							    if (card.getValue() != '9')
+							        pcgtcg.game.skill(i);
+							}
 						}
 					}
 					pcgtcg.game.sdamage(target.getPower() - card.getPower());

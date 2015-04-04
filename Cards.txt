@@ -46,8 +46,8 @@
 =====
 = J =
 =====
-[ ] Activate: Retrieve a Q, 10, or 5 from your deck.
-[ ] Passive: Immune to Q's active.
+[x] Activate: Retrieve a Q, 10, or 5 from your deck.
+[x] Passive: Immune to Q's active.
 
 =====
 = Q =
