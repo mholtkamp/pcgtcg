@@ -78,7 +78,6 @@ public class NetworkManager implements Runnable{
 		{
 			System.out.println(ex);
 		}
-		
 	}
 	
 	public void poll()
@@ -180,6 +179,14 @@ public class NetworkManager implements Runnable{
 				else if(com.equals("SREGENERATE"))
 				{
 					pcgtcg.game.exeSREGENERATE(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("RETRIEVE"))
+				{
+					pcgtcg.game.exeRETRIEVE(params.replaceAll("[.]", ""));
+				}
+				else if(com.equals("SRETRIEVE"))
+				{
+					pcgtcg.game.exeSRETRIEVE(params.replaceAll("[.]", ""));
 				}
 				else if (com.equals("NOTIFY"))
 				{

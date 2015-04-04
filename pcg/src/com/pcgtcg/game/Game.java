@@ -557,6 +557,18 @@ public class Game {
 		netman.send("SREGENERATE." + pos);
 	}
 	
+	public void retrieve(int pos)
+	{
+		ehand.add(eplayer.deck.curCards.get(pos));
+		netman.send("RETRIEVE." + pos);
+	}
+	
+	public void sretrieve(int pos)
+	{
+		hand.add(player.deck.curCards.remove(pos));
+		netman.send("SRETRIEVE." + pos);
+	}
+	
 	public void toggle(int pos)
 	{
 		field.getCard(pos).setVisible(true);
@@ -764,6 +776,18 @@ public class Game {
 	{
 		int pos = Integer.parseInt(param);
 		ehand.add(egrave.remove(pos));
+	}
+	
+	public void exeRETRIEVE(String param)
+	{
+		int pos = Integer.parseInt(param);
+		hand.add(player.deck.curCards.remove(pos));
+	}
+	
+	public void exeSRETRIEVE(String param)
+	{
+		int pos = Integer.parseInt(param);
+		ehand.add(eplayer.deck.curCards.remove(pos));
 	}
 	
 	public void exeNOTIFY(String param)
