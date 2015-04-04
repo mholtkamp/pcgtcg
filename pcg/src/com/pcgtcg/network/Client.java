@@ -27,9 +27,16 @@ public class Client extends NetworkManager implements Runnable{
 		connected = true;
         buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
 		
-		while(true)
-		{
-			
-		}
+        while(!finished)
+        {
+            try
+            {
+                Thread.sleep(5);
+            }
+            catch (Exception ex)
+            {
+                System.out.println(ex);
+            }
+        }
 	}
 }

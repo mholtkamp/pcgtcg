@@ -99,18 +99,25 @@ public class Button {
 	
 	public void update()
 	{
-		if(Gdx.input.isTouched())
-		{
-			if(!touched)
-			{
-				touched = true;
-				Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
-				pcgtcg.camera.unproject(touchPos);
-				fire((int) touchPos.x,(int) touchPos.y);
-			}
-		}
-		else
-			touched = false;
+	    if (Gdx.input.justTouched())
+	    {
+    	    Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+            pcgtcg.camera.unproject(touchPos);
+            fire((int) touchPos.x,(int) touchPos.y);
+	    }
+
+//		if(Gdx.input.isTouched())
+//		{
+//			if(!touched)
+//			{
+//				touched = true;
+//				Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+//				pcgtcg.camera.unproject(touchPos);
+//				fire((int) touchPos.x,(int) touchPos.y);
+//			}
+//		}
+//		else
+//			touched = false;
 	}
 	
 	

@@ -28,7 +28,7 @@ public class pcgtcg implements ApplicationListener {
 	
 	//Private Objects
 	private SpriteBatch batch;
-	private static Menu menu;
+	public static Menu menu;
 	public static Game game;
 	
 	//State

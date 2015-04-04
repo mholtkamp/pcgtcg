@@ -17,12 +17,12 @@ public class Menu {
 
 	public int menuState;
 	
-	private final int NULL_STATE = -1;
-	private final int SPLASH_STATE = 0;
-	private final int MAIN_STATE = 1;
-	private final int HOST_STATE = 2;
-	private final int CONNECT_STATE = 3;
-	private final int OPTIONS_STATE = 4;
+	public static final int NULL_STATE = -1;
+	public static final int SPLASH_STATE = 0;
+	public static final int MAIN_STATE = 1;
+	public static final int HOST_STATE = 2;
+	public static final int CONNECT_STATE = 3;
+	public static final int OPTIONS_STATE = 4;
 	
 	private Button optionsButton;
 	private Button hostButton;
@@ -41,7 +41,7 @@ public class Menu {
 		menuState = MAIN_STATE;
 		
 		optionsButton = new Button(80,120,180,50);
-		hostButton = new Button(300,120,180,50);
+		hostButton    = new Button(300,120,180,50);
 		connectButton = new Button( 520, 120, 180, 50);
 		optionsButton.setText("Options");
 		hostButton.setText("Host");
@@ -160,4 +160,8 @@ public class Menu {
 		}
 	}
 	
+	public void reset()
+	{
+	    
+	}
 }

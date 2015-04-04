@@ -22,11 +22,13 @@ public class NetworkManager implements Runnable{
 	protected boolean connected;
 	protected BufferedReader buffer;
 	protected Socket socket;
-
+	protected boolean finished;
+	
 	private List<String> addresses;
 	public NetworkManager()
 	{
 		buffer = null;
+		finished = false;
 		connected = false;
 		addresses = new ArrayList<String>();
         
@@ -200,6 +202,10 @@ public class NetworkManager implements Runnable{
                 {
                     pcgtcg.game.exeSMODPOWER(params);
                 }
+                else if (com.equals("REMATCH"))
+                {
+                    pcgtcg.game.exeREMATCH();
+                }
 			}
 		}
 		catch(Exception ex)
@@ -213,7 +219,7 @@ public class NetworkManager implements Runnable{
 	{
 		if(socket != null)
 			socket.dispose();
-		
+		finished = true;
 	}
 	
 	public List<String> getIP()

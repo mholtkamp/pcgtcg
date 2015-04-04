@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.Card;
+import com.pcgtcg.menu.Menu;
 import com.pcgtcg.network.Client;
 import com.pcgtcg.network.NetworkManager;
 import com.pcgtcg.network.Server;
@@ -31,6 +32,7 @@ public class Game {
 	public final int GAME_OVER_STATE = 8;
 	public final int SELECT_TARGET_STATE = 9;
 	public final int ONE_STATE = 1, TWO_STATE = 2;
+	
 	public int turnState;
 	public int inGameState;
 	private int testStatus;
@@ -58,7 +60,9 @@ public class Game {
 	//Options
 	private HandSelector handSel;
 	public Option endOpt;
-	public Option quitOpt;;
+	public Option quitOpt;
+	public Option rematchOpt;
+	public Option menuOpt;
 	public TributeSelector tribSel;
 	public FieldSelector fieldSel;
 	public AttackSelector attackSel;
@@ -70,6 +74,9 @@ public class Game {
 	public NetworkManager netman;
 	public AnimationQueue animationQueue;
 	public HistoryQueue history;
+	
+	public boolean rematchIntent;
+	public boolean rematchRequest;
 	
 	public Game()
 	{
@@ -86,10 +93,16 @@ public class Game {
 		hasWon = false;
 		gameOver = false;
 		hasPlayerAttacked = false;
+		
+		// Options
 		endOpt = new Option("End Turn",650,220);
+		endOpt.setValid(false);
 		quitOpt = new Option("X",760,440);
 		quitOpt.setWidth(40);
-		endOpt.setValid(false);
+		rematchOpt = new Option("Rematch", 250, 150);
+		rematchOpt.setValid(true);
+		menuOpt = new Option("Menu", 450, 150);
+		menuOpt.setValid(true);
 		
 		blackTex       = pcgtcg.manager.get("data/blackTex.png",Texture.class);
 		font           = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
@@ -97,6 +110,9 @@ public class Game {
 		scrollingBgTex = pcgtcg.manager.get("data/scrollingbg.png",Texture.class);
 		animationQueue = new AnimationQueue();
 		history        = new HistoryQueue();
+		
+		rematchIntent  = false;
+		rematchRequest = false;
 	}
 	
 	public Game(boolean isHost)
@@ -278,6 +294,38 @@ public class Game {
 		{
 		    targetSel.update();
 		}
+		else if (inGameState == GAME_OVER_STATE)
+		{
+            if(Gdx.input.justTouched())
+            {
+                Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                pcgtcg.camera.unproject(touchPos);
+                float tx = touchPos.x;
+                float ty = touchPos.y;
+                
+                if(rematchOpt.isTouched(tx, ty))
+                {
+                    rematchIntent = true;
+                    netman.send("REMATCH");
+                }
+                
+                if(menuOpt.isTouched(tx, ty))
+                {
+                    netman.close();
+                    pcgtcg.gameState = pcgtcg.MENU_STATE;
+                    pcgtcg.game = null;
+                    pcgtcg.menu = new Menu();
+                }
+            }
+            
+            netman.poll();
+            
+            if (rematchIntent &&
+                rematchRequest)
+            {
+                reset();
+            }
+		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
 		{
@@ -349,6 +397,29 @@ public class Game {
 				font.draw(batch, "You Win!", 300, 300);
 			else
 				font.draw(batch,"You Lose!",300,300);
+			
+			// Draw text to indicate that the rematch request was sent.
+			if(rematchIntent &&
+			   !rematchRequest)
+			{
+			    font.setColor(0.5f, 0.5f, 1.0f, 1.0f);
+			    font.setScale(1.0f);
+			    font.draw(batch, "Waiting for opponent to accept rematch", 160, 400);
+			    font.setColor(1f, 1f, 1f, 1f);
+			}
+			
+			// If opponent has sent rematch request, let user know
+			if (rematchRequest &&
+			    !rematchIntent)
+			{
+                font.setColor(0.5f, 0.5f, 1.0f, 1.0f);
+                font.setScale(1.0f);
+                font.draw(batch, "Your opponent wants a rematch", 220, 400);
+                font.setColor(1f, 1f, 1f, 1f);
+			}
+			
+			rematchOpt.render(batch);
+			menuOpt.render(batch);
 		}
 	}
 	
@@ -357,6 +428,51 @@ public class Game {
 		netman.close();
 		pcgtcg.game = null;
 		pcgtcg.gameState = pcgtcg.MENU_STATE;
+	}
+	
+	public void reset()
+	{
+	    player  = new Player();
+        eplayer = new Player();
+        hand    = new Hand(true);
+        ehand   = new Hand(false);
+        field   = new Field(true);
+        efield  = new Field(false);
+        grave   = new Grave(true);
+        egrave  = new Grave(false);
+        
+        hasSummoned = false;
+        hasWon = false;
+        gameOver = false;
+        hasPlayerAttacked = false;
+        scrollX = 0.0f;
+        
+        rematchIntent = false;
+        rematchRequest = false;
+        
+        if (netman instanceof Server)
+        {
+            player.deck.randomizeDeck();
+            player.deck.setOwn(true);
+            eplayer.deck.randomizeDeck();
+            eplayer.deck.setOwn(false);
+            player.deck.setCardBoxes(true);
+            eplayer.deck.setCardBoxes(false);
+            Random rand = new Random();
+            if(rand.nextFloat() > 0.5)
+            {
+                firstTurn = 1;
+                isFirstTurn = true;
+            }
+            else
+                firstTurn = 2;
+            inGameState = INIT_STATE;
+        }
+        else
+        {
+            inGameState = ACCEPT_STATE;
+        }
+	        
 	}
 	
 	public void addToast(String text)
@@ -813,5 +929,10 @@ public class Game {
 	    int powerMod = Integer.parseInt(param.split("[.]",2)[1]);
 	    
 	    efield.getCard(pos).modifyPower(powerMod);
+	}
+	
+	public void exeREMATCH()
+	{
+	    rematchRequest = true;
 	}
 }
