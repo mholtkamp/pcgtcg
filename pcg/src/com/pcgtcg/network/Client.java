@@ -21,11 +21,12 @@ public class Client extends NetworkManager implements Runnable{
 	{
 		socketHints = new SocketHints();
 		socketHints.connectTimeout = 400000;
-		System.out.println("Connecting with this IP: " +  pcgtcg.connectIP);
-		socket = Gdx.net.newClientSocket(Protocol.TCP, pcgtcg.connectIP, 2000, socketHints);
+		System.out.println("Connecting to this IP: " +  masterServerIP);
+		socket = Gdx.net.newClientSocket(Protocol.TCP, masterServerIP, 2000, socketHints);
 		
 		connected = true;
         buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+        initialized = true;
 		
         while(!finished)
         {

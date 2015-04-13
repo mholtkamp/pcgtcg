@@ -56,7 +56,7 @@ public class C3 extends Card {
 	    for (int i = 0; i < efield.getSize(); i++)
 	    {
 	        efield.getCard(i).modifyPower(-3);
-	        pcgtcg.game.netman.send("MODPOWER." + i + "." + MOD_POWER);
+	        pcgtcg.netman.send("MODPOWER." + i + "." + MOD_POWER);
             pcgtcg.game.addToast("" + efield.getCard(i).getValue() + " power " + MOD_POWER);
 	    }
 	}

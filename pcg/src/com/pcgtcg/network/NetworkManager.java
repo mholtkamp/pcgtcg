@@ -15,53 +15,49 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.pcg.pcgtcg;
 
-
-
 public class NetworkManager implements Runnable{
 	
+    protected static final String masterServerIP = "127.0.0.1";
 	protected boolean connected;
+	protected boolean ready;
 	protected BufferedReader buffer;
 	protected Socket socket;
-	protected boolean finished;
+	protected volatile boolean finished;
+	protected volatile boolean loggedIn;
+	protected volatile boolean inGame;
+	protected volatile boolean hasGameList;
+	protected volatile boolean initialized;
 	
-	private List<String> addresses;
 	public NetworkManager()
 	{
-		buffer = null;
-		finished = false;
-		connected = false;
-		addresses = new ArrayList<String>();
-        
-		// BEGIN code borrowed from http://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
-		try
-        {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            for(NetworkInterface ni : Collections.list(interfaces)){
-                for(InetAddress address : Collections.list(ni.getInetAddresses()))
-                {
-                    if(address instanceof Inet4Address){
-                        addresses.add(address.getHostAddress());
-                    }
-                }
-            }
-        } 
-        catch (SocketException e) {
-            e.printStackTrace();
-        }
-		
-        String ipAddress = new String("");
-        for(String str:addresses)
-        {
-            ipAddress = ipAddress + str + "\n";
-        }
-        //END borrowed Code
-
-        System.out.println(ipAddress);
+		buffer        = null;
+		finished      = false;
+		connected     = false;
+		ready         = false;
+		loggedIn      = false;
+		inGame        = false;
+		hasGameList   = false;
+		initialized   = false;
 	}
 	
 	public boolean isConnected()
 	{
 		return connected;
+	}
+	
+	public boolean isReady()
+	{
+	    return ready;
+	}
+	
+	public boolean hasGameList()
+	{
+	    return hasGameList;
+	}
+	
+	public boolean isInitialized()
+	{
+	    return initialized;
 	}
 	
 	public void run()
@@ -71,15 +67,28 @@ public class NetworkManager implements Runnable{
 
 	public void send(String str)
 	{
-		str += "\n";
+		String msg = "GAME." + str + "\n";
 		try
 		{
-			socket.getOutputStream().write(str.getBytes());
+			socket.getOutputStream().write(msg.getBytes());
 		}
 		catch(Exception ex)
 		{
 			System.out.println(ex);
 		}
+	}
+	
+	public void sendServer(String str)
+	{
+        String msg = "SERVER." + str + "\n";
+        try
+        {
+            socket.getOutputStream().write(msg.getBytes());
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex);
+        }
 	}
 	
 	public void poll()
@@ -100,13 +109,53 @@ public class NetworkManager implements Runnable{
 					params = "none";
 				}
 				
-				
 				//BEGIN Debug
 				System.out.println("Command: " + com);
 				System.out.println("Params: " + params);
 				// END Debug
 				
-				if(com.equals("DECKONE"))
+				if (com.equals("READY"))
+				{
+				    ready = true;
+				}
+				else if(com.equals("R_LOGIN"))
+				{
+				    if (params.equals("SUCCESS"))
+				    {
+				        loggedIn = true;
+				    }
+				    else
+				    {
+				        loggedIn = false;
+				    }
+				}
+				else if(com.equals("R_CREATE"))
+				{
+				    if (params.equals("SUCCESS"))
+				    {
+				        inGame = true;
+				    }
+				    else
+				    {
+				        inGame = false;
+				    }
+				}
+				else if(com.equals("R_JOIN"))
+				{
+				    if (params.equals("SUCCESS"))
+				    {
+				        inGame = true;
+				    }
+				    else
+				    {
+				        inGame = false;
+				    }
+				}
+				else if(com.equals("R_LIST"))
+				{
+				    parseList(params);
+				}
+				else if(com.equals("DECKONE"))
 				{
 					pcgtcg.game.exeDECKONE(params.replaceAll("[.]", ""));
 				}
@@ -222,9 +271,35 @@ public class NetworkManager implements Runnable{
 		finished = true;
 	}
 	
-	public List<String> getIP()
+	public boolean isLoggedIn()
 	{
-		return addresses; 
-		
+	    return loggedIn;
+	}
+	
+	public boolean isInGame()
+	{
+	    return inGame;
+	}
+	
+	public void parseList(String params)
+	{
+	    String[] splitParams = params.split("[.]",2);
+	    int numGames = Integer.parseInt(splitParams[0]);
+	    System.out.println("Number of games on server: " + numGames);
+	    
+	    // Clear out game list
+	    pcgtcg.menu.clearGameList();
+	    
+	    for (int i = 0; i < numGames; i++)
+	    {
+	        splitParams = splitParams[1].split("[.]",5);
+	        pcgtcg.menu.addGameInfo(Integer.parseInt(splitParams[1]),
+	                                Integer.parseInt(splitParams[2]),
+	                                splitParams[3]);
+	        // Point to the rest of the params
+	        splitParams[1] = splitParams[4];
+	    }
+	    
+	    hasGameList = true;
 	}
 }

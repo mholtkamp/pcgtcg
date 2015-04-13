@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pcgtcg.game.Game;
 import com.pcgtcg.menu.Menu;
+import com.pcgtcg.network.NetworkManager;
 
 public class pcgtcg implements ApplicationListener {
 
@@ -30,10 +31,13 @@ public class pcgtcg implements ApplicationListener {
 	private SpriteBatch batch;
 	public static Menu menu;
 	public static Game game;
+	public static NetworkManager netman;
 	
 	//State
 	public static int gameState;
-	public static String connectIP;
+	
+	// Configured options
+	public static String name = "Tester";
 	
 	public void create()
 	{	
@@ -51,8 +55,9 @@ public class pcgtcg implements ApplicationListener {
 	
 	public void dispose() {
 		batch.dispose();
-		if((game != null) && (game.netman != null))
-			pcgtcg.game.netman.close();
+		if(netman != null)
+			netman.close();
+		manager.dispose();
 	}
 
 	public void loadAssets()

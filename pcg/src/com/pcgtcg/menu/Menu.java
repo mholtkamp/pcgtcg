@@ -1,5 +1,6 @@
 package com.pcgtcg.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.game.Game;
+import com.pcgtcg.network.Client;
+import com.pcgtcg.network.Server;
 import com.pcgtcg.util.Button;
 import com.pcgtcg.util.Option;
 import com.pcgtcg.util.TextField;
@@ -28,13 +31,12 @@ public class Menu {
 	private Button hostButton;
 	private Button connectButton;
 	
-	
 	private Option connectOption;
 	private Option cancelOption;
 	private TextField ipField;
 	private BitmapFont font;
 	
-	private List<String> hostAdds;
+	private ArrayList<GameInfo> gameList;
 	
 	public Menu()
 	{
@@ -49,12 +51,11 @@ public class Menu {
 		
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		connectOption = new Option("Connect",200,320);
+		gameList = new ArrayList<GameInfo>();
 	}
-	
 	
 	public void render(SpriteBatch batch)
 	{
-		
 		if(menuState == MAIN_STATE)
 		{
 			optionsButton.render(batch);
@@ -76,18 +77,20 @@ public class Menu {
 			font.draw(batch, "Waiting for connection...", 100, 400);
 			font.setScale(1f);
 			font.setColor(1f,0f,0f,1f);
-			for(int i = 0; i < hostAdds.size(); i++)
-			{
-				font.draw(batch,hostAdds.get(i),100,230 - i*30);
-			}
 		}
 		else if(menuState == CONNECT_STATE)
 		{
-			ipField.render(batch);
-			connectOption.render(batch);
+		    if (gameList.size() == 0)
+		    {
+		        font.setColor(0f, 0f, 0f, 1f);
+		        font.setScale(1f);
+		        font.draw(batch, "No Open Games", 200, 250);
+		    }
+		    for (int i = 0; i < gameList.size(); i++)
+		    {
+		        gameList.get(i).render(batch);
+		    }
 		}
-		
-		
 	}
 	
 	public void update()
@@ -106,25 +109,78 @@ public class Menu {
 			{
 				menuState = HOST_STATE;
 				System.out.println("Server Game created.");
-				pcgtcg.game = new Game(true);
-				hostAdds = pcgtcg.game.netman.getIP();
+				
+				if (pcgtcg.netman != null)
+				    pcgtcg.netman.close();
+				pcgtcg.netman = new Server();
+				(new Thread(pcgtcg.netman)).start();
+				
+				// Send login
+				while(!pcgtcg.netman.isInitialized())
+				{
+				    
+				}
+				pcgtcg.netman.sendServer("LOGIN." + pcgtcg.name);
+			    
+				while (!pcgtcg.netman.isLoggedIn())
+				{
+				    pcgtcg.netman.poll();
+				}
+				
+				
+				// Send game creation
+				pcgtcg.netman.sendServer("CREATE");
+                while (!pcgtcg.netman.isInGame())
+                {
+                    pcgtcg.netman.poll();
+                }
 				hostButton.clear();
 			}
 			else if(connectButton.isActive())
 			{
 				menuState = CONNECT_STATE;
-				ipField = new TextField("IP",200,400);
-				Gdx.input.setOnscreenKeyboardVisible(true);
-				Gdx.input.setInputProcessor(ipField);
+				
+                if (pcgtcg.netman != null)
+                    pcgtcg.netman.close();
+				pcgtcg.netman = new Client();
+				(new Thread(pcgtcg.netman)).start();
+
+                // Send login
+                while(!pcgtcg.netman.isInitialized())
+                {
+                    
+                }
+                pcgtcg.netman.sendServer("LOGIN." + pcgtcg.name);
+                
+                while (!pcgtcg.netman.isLoggedIn())
+                {
+                    pcgtcg.netman.poll();
+                }
+                
+                // Generate game list
+                pcgtcg.netman.sendServer("LIST");
+                
+                while (!pcgtcg.netman.hasGameList())
+                {
+                    pcgtcg.netman.poll();
+                }
+                
+				//Gdx.input.setOnscreenKeyboardVisible(true);
+				//Gdx.input.setInputProcessor(ipField);
 				connectButton.clear();
 			}
 		}
 		else if(menuState == HOST_STATE)
 		{
-			if(pcgtcg.game.netman.isConnected())
+		    // Poll in hopes to receive a READY message
+		    pcgtcg.netman.poll();
+		    
+			if(pcgtcg.netman.isConnected() &&
+			   pcgtcg.netman.isReady())
 			{
 				menuState = MAIN_STATE;
 				System.out.println("Client has connected!");
+				pcgtcg.game      = new Game(true);
 				pcgtcg.gameState = pcgtcg.GAME_STATE;
 			}
 		}
@@ -137,27 +193,55 @@ public class Menu {
 				float tx = touchPos.x;
 				float ty = touchPos.y;
 				
-				if(connectOption.isTouched(tx, ty))
+				for (int i = 0; i < gameList.size(); i++)
 				{
-					pcgtcg.connectIP = ipField.getData();
-					pcgtcg.game = new Game(false);
+				    if (gameList.get(i).isTouched(tx, ty) &&
+				        gameList.get(i).status == GameInfo.WAITING)
+				    {
+				        pcgtcg.netman.sendServer("JOIN."+gameList.get(i).id);
+				        while (!pcgtcg.netman.isInGame() ||
+				               !pcgtcg.netman.isReady())
+				        {
+				            pcgtcg.netman.poll();
+				        }
+				        
+				        if (pcgtcg.netman.isInGame())
+				        {
+				            pcgtcg.game = new Game(false);
+			                menuState = MAIN_STATE;
+			                System.out.println("Connected to Server!");
+			                pcgtcg.gameState = pcgtcg.GAME_STATE;
+				        }
+				        else
+				        {
+				            menuState = MAIN_STATE;
+				            System.out.println("Failed to join game");
+				        }
+				    }
 				}
 			}
-			if(Gdx.input.isKeyPressed(Input.Keys.ENTER) && (pcgtcg.game == null))
-			{
-				
-				System.out.println("Client Game created.");
-				pcgtcg.connectIP = ipField.getData();
-				pcgtcg.game = new Game(false);
-			}
-			if((pcgtcg.game != null) && (pcgtcg.game.netman != null) && pcgtcg.game.netman.isConnected())
-			{
-				menuState = MAIN_STATE;
-				System.out.println("Connected to Server!");
-				Gdx.input.setOnscreenKeyboardVisible(false);
-				pcgtcg.gameState = pcgtcg.GAME_STATE;
-			}
 		}
+	}
+	
+	public void clearGameList()
+	{
+	    gameList.clear();
+	}
+	
+	public void addGameInfo(int    id,
+	                        int    status,
+	                        String hostName)
+	{
+	    int pos = gameList.size();
+	    GameInfo newGameInfo = new GameInfo();
+	    newGameInfo.id       = id;
+	    newGameInfo.status   = status;
+	    newGameInfo.hostName = hostName;
+	    newGameInfo.box.set(25, 
+	                        pcgtcg.SCREEN_HEIGHT - pos*130 - 130,
+	                        400,
+	                        105);
+	    gameList.add(newGameInfo);
 	}
 	
 	public void reset()

@@ -8,11 +8,12 @@ import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.net.SocketHints;
+import com.pcg.pcgtcg;
 
 public class Server extends NetworkManager implements Runnable{
 
-	private ServerSocket serverSocket;
-	private ServerSocketHints serverSocketHint;
+	private SocketHints socketHints;
 	
 	
 	public Server()
@@ -22,14 +23,14 @@ public class Server extends NetworkManager implements Runnable{
 	
 	public void run()
 	{
-		System.out.println("Server running");
-		serverSocketHint = new ServerSocketHints();
-		serverSocketHint.acceptTimeout = 0;
-		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 2000, serverSocketHint);
-		socket = serverSocket.accept(null);
+		socketHints = new SocketHints();
+		socketHints.connectTimeout = 3000;
+		System.out.println("Connecting to this IP: " +  masterServerIP);
+		socket = Gdx.net.newClientSocket(Protocol.TCP, masterServerIP, 2000, socketHints);
 		
 		connected = true;
         buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+		initialized = true;
 		
 		while(!finished)
 		{
@@ -43,12 +44,4 @@ public class Server extends NetworkManager implements Runnable{
 		    }
 		}
 	}
-	
-	public void close()
-	{
-		if(serverSocket != null)
-			serverSocket.dispose();
-		super.close();
-	}
-	
 }

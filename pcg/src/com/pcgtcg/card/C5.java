@@ -51,7 +51,7 @@ public class C5 extends Card {
 	                break;
 	            }
 	        }
-	        pcgtcg.game.netman.send("SMODPOWER." + pos + "." + MOD_POWER);
+	        pcgtcg.netman.send("SMODPOWER." + pos + "." + MOD_POWER);
 	        pcgtcg.game.addToast("" + targets[0].getValue() + " power +" + MOD_POWER);
 	    }
 	}
