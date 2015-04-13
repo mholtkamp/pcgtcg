@@ -71,7 +71,6 @@ public class Game {
 	public boolean hasSummoned;
 	public int playerNum;
 	public int firstTurn;
-	public NetworkManager netman;
 	public AnimationQueue animationQueue;
 	public HistoryQueue history;
 	
@@ -120,10 +119,7 @@ public class Game {
 		this();
 		if(isHost)
 		{
-
 			playerNum = 1;
-			netman = new Server();
-			(new Thread(netman)).start();
 			player.deck.randomizeDeck();
 			player.deck.setOwn(true);
 			eplayer.deck.randomizeDeck();
@@ -143,13 +139,9 @@ public class Game {
 		else
 		{
 			playerNum = 2;
-			netman = new Client();
-			(new Thread(netman)).start();
 			inGameState = ACCEPT_STATE;
-
 		}
 	}
-	
 	
 	public void update()
 	{
@@ -177,9 +169,9 @@ public class Game {
 			
 			String ft = "FIRSTTURN." + firstTurn;
 			
-			netman.send(d1);
-			netman.send(d2);
-			netman.send(ft);
+			pcgtcg.netman.send(d1);
+			pcgtcg.netman.send(d2);
+			pcgtcg.netman.send(ft);
 			
 			if(firstTurn == 1)
 			{
@@ -208,7 +200,7 @@ public class Game {
 		}
 		else if(inGameState == ACCEPT_STATE)
 		{
-			netman.poll();
+			pcgtcg.netman.poll();
 			if(Gdx.input.justTouched())
 			{
 			Vector3 touchPos = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
@@ -306,19 +298,19 @@ public class Game {
                 if(rematchOpt.isTouched(tx, ty))
                 {
                     rematchIntent = true;
-                    netman.send("REMATCH");
+                    pcgtcg.netman.send("REMATCH");
                 }
                 
                 if(menuOpt.isTouched(tx, ty))
                 {
-                    netman.close();
+                    pcgtcg.netman.close();
                     pcgtcg.gameState = pcgtcg.MENU_STATE;
                     pcgtcg.game = null;
                     pcgtcg.menu = new Menu();
                 }
             }
             
-            netman.poll();
+            pcgtcg.netman.poll();
             
             if (rematchIntent &&
                 rematchRequest)
@@ -329,7 +321,7 @@ public class Game {
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
 		{
-			netman.close();
+			pcgtcg.netman.close();
 			Gdx.app.exit();
 		}
 		
@@ -425,7 +417,7 @@ public class Game {
 	
 	public void quit()
 	{
-		netman.close();
+		pcgtcg.netman.close();
 		pcgtcg.game = null;
 		pcgtcg.gameState = pcgtcg.MENU_STATE;
 	}
@@ -450,7 +442,7 @@ public class Game {
         rematchIntent = false;
         rematchRequest = false;
         
-        if (netman instanceof Server)
+        if (pcgtcg.netman instanceof Server)
         {
             player.deck.randomizeDeck();
             player.deck.setOwn(true);
@@ -481,7 +473,7 @@ public class Game {
         toast.text = text;
         history.add(toast);
         
-        netman.send("NOTIFY." + text);
+        pcgtcg.netman.send("NOTIFY." + text);
 	}
 	
 	
@@ -508,7 +500,7 @@ public class Game {
 		    }
 			hand.add(player.deck.curCards.removeFirst());
 		}
-		netman.send("DRAW");
+		pcgtcg.netman.send("DRAW");
 		upkeep();
 	}
 	
@@ -531,7 +523,7 @@ public class Game {
             }
             ehand.add(eplayer.deck.curCards.removeFirst());
         }
-        netman.send("FDRAW");
+        pcgtcg.netman.send("FDRAW");
     }
     
 	public void upkeep()
@@ -546,7 +538,7 @@ public class Game {
 		isFirstTurn = false;
 		for(int i = 0; i < field.getSize(); i++)
 			field.getCard(i).setHasAttacked(false);
-		netman.send("ENDTURN");
+		pcgtcg.netman.send("ENDTURN");
 	}
 	
 	public void summon(Card c)
@@ -567,7 +559,7 @@ public class Game {
 		c.summon();
 		
 		hasSummoned = true;
-		netman.send("SUMMON." + c.getValue());
+		pcgtcg.netman.send("SUMMON." + c.getValue());
 		addToast("Summon " + c.getValue());
 	}
 	
@@ -589,7 +581,7 @@ public class Game {
 			}
 		}
 		hasSummoned = true;
-		netman.send("SET." + c.getValue());
+		pcgtcg.netman.send("SET." + c.getValue());
 	}
 	
 	public void activate(Card c)
@@ -628,68 +620,68 @@ public class Game {
 	public void discard(int pos)
 	{
 	    egrave.add(ehand.remove(pos));
-	    netman.send("DISCARD." + pos);
+	    pcgtcg.netman.send("DISCARD." + pos);
 	}
 	
 	public void sdiscard(int pos)
 	{
 	    grave.add(hand.remove(pos));
-	    netman.send("SDISCARD." + pos);
+	    pcgtcg.netman.send("SDISCARD." + pos);
 	}
 	
 	public void kill(int pos)
 	{
 		egrave.add(efield.remove(pos));
-		netman.send("KILL." + pos);
+		pcgtcg.netman.send("KILL." + pos);
 	}
 	
 	public void skill(int pos)
 	{
 	    grave.add(field.remove(pos));
-		netman.send("SKILL." + pos);
+		pcgtcg.netman.send("SKILL." + pos);
 	}
 	
 	public void retract(int pos)
 	{
 	    ehand.add(efield.remove(pos));
-	    netman.send("RETRACT." + pos);
+	    pcgtcg.netman.send("RETRACT." + pos);
 	}
 	
 	public void sretract(int pos)
 	{
 	    hand.add(field.remove(pos));
-	    netman.send("SRETRACT." + pos);
+	    pcgtcg.netman.send("SRETRACT." + pos);
 	}
 	
 	public void regenerate(int pos)
 	{
 		ehand.add(egrave.remove(pos));
-		netman.send("REGENERATE." + pos);
+		pcgtcg.netman.send("REGENERATE." + pos);
 	}
 	
 	public void sregenerate(int pos)
 	{
 		hand.add(grave.remove(pos));
-		netman.send("SREGENERATE." + pos);
+		pcgtcg.netman.send("SREGENERATE." + pos);
 	}
 	
 	public void retrieve(int pos)
 	{
 		ehand.add(eplayer.deck.curCards.get(pos));
-		netman.send("RETRIEVE." + pos);
+		pcgtcg.netman.send("RETRIEVE." + pos);
 	}
 	
 	public void sretrieve(int pos)
 	{
 		hand.add(player.deck.curCards.remove(pos));
-		netman.send("SRETRIEVE." + pos);
+		pcgtcg.netman.send("SRETRIEVE." + pos);
 	}
 	
 	public void toggle(int pos)
 	{
 		field.getCard(pos).setVisible(true);
 		field.getCard(pos).toggleAttackPosition();
-		netman.send("TOGGLE."+pos);
+		pcgtcg.netman.send("TOGGLE."+pos);
 		field.updatePosition();
 	}
 	
@@ -701,7 +693,7 @@ public class Game {
 			hasWon = true;
 			gameOver = true;
 		}
-		netman.send("DAMAGE."+amount);
+		pcgtcg.netman.send("DAMAGE."+amount);
 	}
 	
 	public void sdamage(int amount)
@@ -712,7 +704,7 @@ public class Game {
 			hasWon = false;
 			gameOver = true;
 		}
-		netman.send("SDAMAGE."+amount);
+		pcgtcg.netman.send("SDAMAGE."+amount);
 	}
 	//*************************************************
 	//*************     NET ACTIONS     ***************
