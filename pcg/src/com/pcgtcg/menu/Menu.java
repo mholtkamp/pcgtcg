@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -20,12 +21,15 @@ public class Menu {
 
 	public int menuState;
 	
-	public static final int NULL_STATE = -1;
-	public static final int SPLASH_STATE = 0;
-	public static final int MAIN_STATE = 1;
-	public static final int HOST_STATE = 2;
+	public static final int NULL_STATE    = -1;
+	public static final int SPLASH_STATE  = 0;
+	public static final int MAIN_STATE    = 1;
+	public static final int HOST_STATE    = 2;
 	public static final int CONNECT_STATE = 3;
 	public static final int OPTIONS_STATE = 4;
+	public static final int LOGIN_STATE   = 5;
+	public static final int CREATE_STATE  = 6;
+	public static final int LIST_STATE    = 7;
 	
 	private Button optionsButton;
 	private Button hostButton;
@@ -35,6 +39,14 @@ public class Menu {
 	private Option cancelOption;
 	private TextField ipField;
 	private BitmapFont font;
+	private Texture whiteTex;
+	
+	private boolean fadeFlag;
+	private float fadeAlpha;
+	private final static float FADE_RATE = 2f;
+	
+	private boolean hasSentLogin;
+	private int queuedState;
 	
 	private ArrayList<GameInfo> gameList;
 	
@@ -52,6 +64,13 @@ public class Menu {
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		connectOption = new Option("Connect",200,320);
 		gameList = new ArrayList<GameInfo>();
+		whiteTex = pcgtcg.manager.get("data/whiteTex.png", Texture.class);
+		
+		fadeFlag = true;
+		fadeAlpha = 1f;
+		
+		hasSentLogin = false;
+		queuedState = -1;
 	}
 	
 	public void render(SpriteBatch batch)
@@ -62,13 +81,15 @@ public class Menu {
 			hostButton.render(batch);
 			connectButton.render(batch);
 				
-			font.setScale(4f,3f);
+			font.setScale(3f,3f);
 			font.setColor(1f,0.1f,0.1f,1f);
-			font.draw(batch, "PCG", 80, 430);
+			font.draw(batch, "PCG", 300, 430);
+			font.setScale(2f,2f);
 			font.setColor(0f,0f,0f,1f);
-			font.draw(batch, "the", 180, 370);
+			font.draw(batch, "the", 340, 365);
+			font.setScale(3f,3f);
 			font.setColor(1f,0.1f,0.1f,1f);
-			font.draw(batch, "TCG", 280, 310);
+			font.draw(batch, "TCG", 300, 310);
 		}
 		else if(menuState == HOST_STATE)
 		{
@@ -91,6 +112,61 @@ public class Menu {
 		        gameList.get(i).render(batch);
 		    }
 		}
+		else if (menuState == LOGIN_STATE)
+		{
+		    batch.setColor(0f, 0f, 0f, 1f);
+		    batch.draw(whiteTex, 
+		               0f,
+		               0f,
+		               pcgtcg.SCREEN_WIDTH,
+		               pcgtcg.SCREEN_HEIGHT);
+		    batch.setColor(1f, 1f, 1f, 1f);
+		    
+		    font.setScale(2f);
+		    font.setColor(1f, 1f, 1f, 1f);
+		    font.draw(batch, "Logging In...", 100, 400);
+		}
+		else if (menuState == CREATE_STATE)
+		{
+            batch.setColor(0f, 0f, 0f, 1f);
+            batch.draw(whiteTex, 
+                       0f,
+                       0f,
+                       pcgtcg.SCREEN_WIDTH,
+                       pcgtcg.SCREEN_HEIGHT);
+            batch.setColor(1f, 1f, 1f, 1f);
+            
+            font.setScale(2f);
+            font.setColor(1f, 1f, 1f, 1f);
+            font.draw(batch, "Creating Game...", 100, 400);
+		}
+		else if (menuState == LIST_STATE)
+		{
+            batch.setColor(0f, 0f, 0f, 1f);
+            batch.draw(whiteTex, 
+                       0f,
+                       0f,
+                       pcgtcg.SCREEN_WIDTH,
+                       pcgtcg.SCREEN_HEIGHT);
+            batch.setColor(1f, 1f, 1f, 1f);
+            
+            font.setScale(2f);
+            font.setColor(1f, 1f, 1f, 1f);
+            font.draw(batch, "Requesting Game List...", 100, 400);
+		}
+		
+      if (fadeFlag)
+        {
+            fadeAlpha -= FADE_RATE*Gdx.graphics.getDeltaTime();
+            if (fadeAlpha <= 0f)
+                fadeFlag = false;
+            else
+            {
+                batch.setColor(0f, 0f, 0f, fadeAlpha);
+                batch.draw(whiteTex,0,0, pcgtcg.SCREEN_WIDTH, pcgtcg.SCREEN_HEIGHT);
+                batch.setColor(1f, 1f, 1f, 1f);
+            }
+        }
 	}
 	
 	public void update()
@@ -107,7 +183,6 @@ public class Menu {
 			}
 			else if(hostButton.isActive())
 			{
-				menuState = HOST_STATE;
 				System.out.println("Server Game created.");
 				
 				if (pcgtcg.netman != null)
@@ -115,26 +190,9 @@ public class Menu {
 				pcgtcg.netman = new Server();
 				(new Thread(pcgtcg.netman)).start();
 				
-				// Send login
-				while(!pcgtcg.netman.isInitialized())
-				{
-				    
-				}
-				pcgtcg.netman.sendServer("LOGIN." + pcgtcg.name);
-			    
-				while (!pcgtcg.netman.isLoggedIn())
-				{
-				    pcgtcg.netman.poll();
-				}
-				
-				
-				// Send game creation
-				pcgtcg.netman.sendServer("CREATE");
-                while (!pcgtcg.netman.isInGame())
-                {
-                    pcgtcg.netman.poll();
-                }
 				hostButton.clear();
+				queuedState = CREATE_STATE;
+				menuState = LOGIN_STATE;
 			}
 			else if(connectButton.isActive())
 			{
@@ -145,29 +203,12 @@ public class Menu {
 				pcgtcg.netman = new Client();
 				(new Thread(pcgtcg.netman)).start();
 
-                // Send login
-                while(!pcgtcg.netman.isInitialized())
-                {
-                    
-                }
-                pcgtcg.netman.sendServer("LOGIN." + pcgtcg.name);
-                
-                while (!pcgtcg.netman.isLoggedIn())
-                {
-                    pcgtcg.netman.poll();
-                }
-                
-                // Generate game list
-                pcgtcg.netman.sendServer("LIST");
-                
-                while (!pcgtcg.netman.hasGameList())
-                {
-                    pcgtcg.netman.poll();
-                }
+                connectButton.clear();
+                queuedState = LIST_STATE;
+                menuState = LOGIN_STATE;
                 
 				//Gdx.input.setOnscreenKeyboardVisible(true);
 				//Gdx.input.setInputProcessor(ipField);
-				connectButton.clear();
 			}
 		}
 		else if(menuState == HOST_STATE)
@@ -178,6 +219,7 @@ public class Menu {
 			if(pcgtcg.netman.isConnected() &&
 			   pcgtcg.netman.isReady())
 			{
+			    setFade();
 				menuState = MAIN_STATE;
 				System.out.println("Client has connected!");
 				pcgtcg.game      = new Game(true);
@@ -208,12 +250,14 @@ public class Menu {
 				        if (pcgtcg.netman.isInGame())
 				        {
 				            pcgtcg.game = new Game(false);
-			                menuState = MAIN_STATE;
+				            setFade();
+				            menuState = MAIN_STATE;
 			                System.out.println("Connected to Server!");
 			                pcgtcg.gameState = pcgtcg.GAME_STATE;
 				        }
 				        else
 				        {
+				            setFade();
 				            menuState = MAIN_STATE;
 				            System.out.println("Failed to join game");
 				        }
@@ -221,8 +265,64 @@ public class Menu {
 				}
 			}
 		}
+		else if (menuState == LOGIN_STATE)
+		{
+            // Send login
+            if(pcgtcg.netman.isInitialized())
+            {
+                if (!hasSentLogin)
+                {
+                    pcgtcg.netman.sendServer("LOGIN." + pcgtcg.name);
+                    hasSentLogin = true;
+                }
+                
+                // Poll to check for R_LOGIN
+                pcgtcg.netman.poll();
+                
+                if(pcgtcg.netman.isLoggedIn())
+                {
+                    menuState = queuedState;
+                    queuedState = NULL_STATE;
+                    
+                    if (menuState == CREATE_STATE)
+                    {
+                        // Send game creation
+                        pcgtcg.netman.sendServer("CREATE");
+                    }
+                    else if (menuState == LIST_STATE)
+                    {
+                        // Generate game list
+                        pcgtcg.netman.sendServer("LIST");
+                    }
+                    hasSentLogin = false;
+                }   
+            }
+		}
+		else if (menuState == CREATE_STATE)
+		{
+		    pcgtcg.netman.poll();
+            if (pcgtcg.netman.isInGame())
+            {
+                menuState = HOST_STATE;
+                setFade();
+            }
+		}
+		else if (menuState == LIST_STATE)
+		{   
+		    pcgtcg.netman.poll();
+            if (pcgtcg.netman.hasGameList())
+            {
+                menuState = CONNECT_STATE;
+                setFade();
+            }
+		}
 	}
 	
+	public void setFade()
+	{
+	    fadeAlpha = 1f;
+	    fadeFlag = true;
+	}
 	public void clearGameList()
 	{
 	    gameList.clear();

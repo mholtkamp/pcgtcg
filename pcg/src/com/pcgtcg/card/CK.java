@@ -18,13 +18,14 @@ public class CK extends Card {
 		hasActive = true;
 		hasActivateTarget = true;
 		
-		activeDescriptor = "If your life is less than the enemy's life, \n summon a selected card from your hand.";
+		activeDescriptor = "If your life is less than the enemy's life, \nsummon a Q or lower from your hand at 0 tribute cost.";
 		passiveDescriptor = "";
 	}
 
 	public void activate()
 	{
-	    if (pcgtcg.game.player.life < pcgtcg.game.eplayer.life)
+	    if (pcgtcg.game.player.life < pcgtcg.game.eplayer.life &&
+	        !pcgtcg.game.hasSummoned)
 	    {
     	    pcgtcg.game.inGameState = pcgtcg.game.SELECT_TARGET_STATE;
             pcgtcg.game.targetSel = new TargetSelector(this,
@@ -43,7 +44,11 @@ public class CK extends Card {
     {
         if (numTargets == 1)
         {
-            pcgtcg.game.summon(targets[0]);
+            if (targets[0].getValue() != 'K' &&
+                targets[0].getValue() != 'A')
+            {
+                pcgtcg.game.summon(targets[0]);
+            }
         }
     }
     

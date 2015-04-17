@@ -17,7 +17,7 @@ import com.pcg.pcgtcg;
 
 public class NetworkManager implements Runnable{
 	
-    protected static final String masterServerIP = "127.0.0.1";
+    protected static final String masterServerIP = "162.218.114.117";
 	protected boolean connected;
 	protected boolean ready;
 	protected BufferedReader buffer;

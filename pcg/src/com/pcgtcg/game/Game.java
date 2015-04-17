@@ -120,9 +120,11 @@ public class Game {
 		if(isHost)
 		{
 			playerNum = 1;
-			player.deck.randomizeDeck();
+			FullDeck fdeck = new FullDeck();
+			fdeck.shuffle();
+			player.deck.dealDeck(fdeck);
 			player.deck.setOwn(true);
-			eplayer.deck.randomizeDeck();
+			eplayer.deck.dealDeck(fdeck);
 			eplayer.deck.setOwn(false);
 			player.deck.setCardBoxes(true);
 			eplayer.deck.setCardBoxes(false);

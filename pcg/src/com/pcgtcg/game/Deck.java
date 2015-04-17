@@ -161,6 +161,16 @@ public class Deck {
 				break;
 		}
 	}
+	
+	public void dealDeck(FullDeck fdeck)
+	{
+	    for (int i = 0; i < 26; i++)
+	    {
+	        curCards.add(fdeck.draw());
+	        allCards.add(curCards.get(i));
+	    }
+	}
+	
 	public int getSize()
 	{
 		return allCards.size();
