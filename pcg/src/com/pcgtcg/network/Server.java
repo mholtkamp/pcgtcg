@@ -24,7 +24,7 @@ public class Server extends NetworkManager implements Runnable{
 	public void run()
 	{
 		socketHints = new SocketHints();
-		socketHints.connectTimeout = 3000;
+		socketHints.connectTimeout = 400000;
 		System.out.println("Connecting to this IP: " +  masterServerIP);
 		socket = Gdx.net.newClientSocket(Protocol.TCP, masterServerIP, 2000, socketHints);
 		

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
+import com.pcgtcg.card.*;
 import com.pcgtcg.game.Game;
 import com.pcgtcg.network.Client;
 import com.pcgtcg.network.Server;
@@ -32,9 +33,11 @@ public class Menu {
 	public static final int LIST_STATE    = 7;
 	public static final int JOIN_STATE    = 8;
 	
-	private Button optionsButton;
+	private Button quitButton;
 	private Button hostButton;
 	private Button connectButton;
+	private Button connectLANButton;
+	private Button hostLANButton;
 	
 	private TextOption connectOption;
 	private TextOption cancelOption;
@@ -50,18 +53,28 @@ public class Menu {
 	private int queuedState;
 	private GameSelect gameSelect;
 	
+	float displayPos;
+	
+	private Card[] displayCards1;
+	private Card[] displayCards2;
+	
 	private ArrayList<GameInfo> gameList;
 	
 	public Menu()
 	{
 		menuState = MAIN_STATE;
 		
-		optionsButton = new Button(80,120,180,50);
-		hostButton    = new Button(300,120,180,50);
-		connectButton = new Button( 520, 120, 180, 50);
-		optionsButton.setText("Options");
+		connectButton    = new Button(160,130,170,50);
+		hostButton       = new Button(160,70,170,50);
+		quitButton       = new Button(345, 100, 105, 50);
+		connectLANButton = new Button(465,130,170,50);
+		hostLANButton    = new Button(465,70,170,50);
+		
+		quitButton.setText("Quit");
 		hostButton.setText("Host");
 		connectButton.setText("Connect");
+        connectLANButton.setText("Connect");
+        hostLANButton.setText("Host");
 		
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		connectOption = new TextOption("Connect",200,320);
@@ -69,6 +82,31 @@ public class Menu {
 		gameSelect = new GameSelect();
 		whiteTex = pcgtcg.manager.get("data/whiteTex.png", Texture.class);
 		
+		displayCards1 = new Card[8];
+		displayCards2 = new Card[8];
+
+	    displayCards1[0] = new CA();
+	    displayCards1[1] = new C4();
+	    displayCards1[2] = new C9();
+	    displayCards1[3] = new C2();
+	    displayCards1[4] = new CK();
+	    displayCards1[5] = new CT();
+	    displayCards1[6] = new C5();
+	    displayCards1[7] = new C7();
+	    
+	    displayCards2[0] = new CQ();
+	    displayCards2[1] = new C8();
+	    displayCards2[2] = new C6();
+	    displayCards2[3] = new C3();
+	    displayCards2[4] = new CA();
+	    displayCards2[5] = new CK();
+	    displayCards2[6] = new CJ();
+	    displayCards2[7] = new C4();
+	    
+	    displayPos = 0.0f;
+
+	    updateDisplayCards();
+	    
 		fadeFlag = true;
 		fadeAlpha = 1f;
 		
@@ -80,9 +118,11 @@ public class Menu {
 	{
 		if(menuState == MAIN_STATE)
 		{
-			optionsButton.render(batch);
+			quitButton.render(batch);
 			hostButton.render(batch);
 			connectButton.render(batch);
+			connectLANButton.render(batch);
+			hostLANButton.render(batch);
 				
 			font.setScale(3f,3f);
 			font.setColor(1f,0.1f,0.1f,1f);
@@ -93,6 +133,12 @@ public class Menu {
 			font.setScale(3f,3f);
 			font.setColor(1f,0.1f,0.1f,1f);
 			font.draw(batch, "TCG", 300, 310);
+			
+			for (int i = 0; i < 8; i++)
+			{
+			    displayCards1[i].render(batch);
+			    displayCards2[i].render(batch);
+			}
 		}
 		else if(menuState == HOST_STATE)
 		{
@@ -179,15 +225,23 @@ public class Menu {
 	
 	public void update()
 	{
+	    displayPos += Gdx.graphics.getDeltaTime()*50;
+	    if (displayPos > 8*150)
+	        displayPos = 0;
+	    updateDisplayCards();
+	    
 		if(menuState == MAIN_STATE)
 		{
-			optionsButton.update();
+			quitButton.update();
 			hostButton.update();
 			connectButton.update();
+			connectLANButton.update();
+			hostLANButton.update();
 			
-			if(optionsButton.isActive())
+			if(quitButton.isActive())
 			{
-				optionsButton.clear();
+				quitButton.clear();
+				Gdx.app.exit();
 			}
 			else if(hostButton.isActive())
 			{
@@ -341,5 +395,24 @@ public class Menu {
 	public void reset()
 	{
 	    
+	}
+	
+	void updateDisplayCards()
+	{
+	    for (int i = 0; i < 8; i++)
+	    {
+	        if (i*150 + displayPos <= 480)
+	        {
+	            displayCards1[i].setBox(0,   (int) displayPos + i*150, 120, 150);
+	            displayCards2[i].setBox(680, (int) (pcgtcg.SCREEN_HEIGHT - (i+1)*150 - displayPos), 120, 150);
+	        }
+	        else
+	        {
+	            displayCards1[i].setBox(0,   (int) displayPos + i*150 - 8*150, 120, 150);
+	            displayCards2[i].setBox(680, (int) (pcgtcg.SCREEN_HEIGHT - (i+1)*150 - displayPos + 8*150), 120, 150);
+	        }
+	        
+	        
+	    }
 	}
 }
