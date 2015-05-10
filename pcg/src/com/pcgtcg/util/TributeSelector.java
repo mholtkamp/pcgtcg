@@ -13,8 +13,8 @@ import com.pcgtcg.card.Card;
 
 public class TributeSelector extends OptionSelector{
 	
-	private Option tributeOption;
-	private Option cancelOption;
+	private TextOption tributeOption;
+	private TextOption cancelOption;
 	private int tributeCount;
 	private Card card;
 	private LinkedList<Integer> markedPositions;
@@ -27,8 +27,8 @@ public class TributeSelector extends OptionSelector{
 		super();
 		this.card = card;
 		markedPositions = new LinkedList<Integer>();
-		tributeOption = new Option("Tribute",12,250);
-		cancelOption = new Option("Cancel", 12, 200);
+		tributeOption = new TextOption("Tribute",12,250);
+		cancelOption = new TextOption("Cancel", 12, 200);
 		
 		options.add(tributeOption);
 		options.add(cancelOption);

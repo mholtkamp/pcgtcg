@@ -13,8 +13,8 @@ public class AttackSelector extends OptionSelector {
 	private Card card;
 	private Card target;
 	private int targetPos;
-	private Option attackOption;
-	private Option cancelOption;
+	private TextOption attackOption;
+	private TextOption cancelOption;
 	private Texture blueTex;
 
 	
@@ -23,8 +23,8 @@ public class AttackSelector extends OptionSelector {
 		super();
 		this.card = card;
 		
-		attackOption = new Option("Attack", 12, 250);
-		cancelOption = new Option("Cancel", 12, 200);
+		attackOption = new TextOption("Attack", 12, 250);
+		cancelOption = new TextOption("Cancel", 12, 200);
 		
 		options.add(attackOption);
 		options.add(cancelOption);

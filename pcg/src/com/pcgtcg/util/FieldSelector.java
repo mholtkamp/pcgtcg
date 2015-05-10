@@ -9,18 +9,18 @@ import com.pcgtcg.game.Field;
 public class FieldSelector extends OptionSelector {
 	
 	private Card card;
-	private Option attackOption;
-	private Option toggleOption;
-	private Option cancelOption;
+	private TextOption attackOption;
+	private TextOption toggleOption;
+	private TextOption cancelOption;
 	
 	public FieldSelector(Card card)
 	{
 		super();
 		this.card = card;
 		
-		attackOption = new Option("Attack",12,300);
-		toggleOption = new Option("Toggle", 12, 250);
-		cancelOption = new Option("Cancel", 12, 150);
+		attackOption = new TextOption("Attack",12,300);
+		toggleOption = new TextOption("Toggle", 12, 250);
+		cancelOption = new TextOption("Cancel", 12, 150);
 		
 		options.add(attackOption);
 		options.add(toggleOption);

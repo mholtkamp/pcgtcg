@@ -8,14 +8,14 @@ import com.pcg.pcgtcg;
 
 public abstract class OptionSelector {
 	
-	protected LinkedList<Option> options;
+	protected LinkedList<TextOption> options;
 	protected Texture whiteTex;
 	protected Texture blackTex;
 	
 	public OptionSelector()
 	{
 		whiteTex = pcgtcg.manager.get("data/whiteTex.png",Texture.class);
-		options = new LinkedList<Option>();
+		options = new LinkedList<TextOption>();
 	}
 	public void render(SpriteBatch batch)
 	{

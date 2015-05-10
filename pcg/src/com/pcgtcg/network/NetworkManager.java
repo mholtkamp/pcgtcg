@@ -55,6 +55,11 @@ public class NetworkManager implements Runnable{
 	    return hasGameList;
 	}
 	
+	public void clearGameList()
+	{
+	    hasGameList = false;
+	}
+	
 	public boolean isInitialized()
 	{
 	    return initialized;

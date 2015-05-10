@@ -20,7 +20,7 @@ import com.pcgtcg.util.AttackSelector;
 import com.pcgtcg.util.FieldSelector;
 import com.pcgtcg.util.HandSelector;
 import com.pcgtcg.util.HistoryQueue;
-import com.pcgtcg.util.Option;
+import com.pcgtcg.util.TextOption;
 import com.pcgtcg.util.HistoryToast;
 import com.pcgtcg.util.TargetSelector;
 import com.pcgtcg.util.TributeSelector;
@@ -59,10 +59,10 @@ public class Game {
 	
 	//Options
 	private HandSelector handSel;
-	public Option endOpt;
-	public Option quitOpt;
-	public Option rematchOpt;
-	public Option menuOpt;
+	public TextOption endOpt;
+	public TextOption quitOpt;
+	public TextOption rematchOpt;
+	public TextOption menuOpt;
 	public TributeSelector tribSel;
 	public FieldSelector fieldSel;
 	public AttackSelector attackSel;
@@ -92,15 +92,16 @@ public class Game {
 		hasWon = false;
 		gameOver = false;
 		hasPlayerAttacked = false;
+		isFirstTurn = false;
 		
 		// Options
-		endOpt = new Option("End Turn",650,220);
+		endOpt = new TextOption("End Turn",650,220);
 		endOpt.setValid(false);
-		quitOpt = new Option("X",760,440);
+		quitOpt = new TextOption("X",760,440);
 		quitOpt.setWidth(40);
-		rematchOpt = new Option("Rematch", 250, 150);
+		rematchOpt = new TextOption("Rematch", 250, 150);
 		rematchOpt.setValid(true);
-		menuOpt = new Option("Menu", 450, 150);
+		menuOpt = new TextOption("Menu", 450, 150);
 		menuOpt.setValid(true);
 		
 		blackTex       = pcgtcg.manager.get("data/blackTex.png",Texture.class);
@@ -128,8 +129,7 @@ public class Game {
 			eplayer.deck.setOwn(false);
 			player.deck.setCardBoxes(true);
 			eplayer.deck.setCardBoxes(false);
-			Random rand = new Random();
-			if(rand.nextFloat() > 0.5)
+			if(Math.random() > 0.5)
 			{
 				firstTurn = 1;
 				isFirstTurn = true;

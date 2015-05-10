@@ -82,4 +82,10 @@ public class GameInfo implements Touchable
         
         font.setColor(1f,1f,1f,1f);
     }
+    
+    public void setPosition(int x, int y)
+    {
+        this.box.x = x;
+        this.box.y = y;
+    }
 }

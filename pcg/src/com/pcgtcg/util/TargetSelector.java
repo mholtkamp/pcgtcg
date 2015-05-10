@@ -47,8 +47,8 @@ public class TargetSelector extends OptionSelector {
     private boolean flagFriendly;
     private boolean flagEnemy;
     
-    private Option targetOption;
-    private Option cancelOption;
+    private TextOption targetOption;
+    private TextOption cancelOption;
     private Texture blueTex;
     
     public TargetSelector(Card    card,
@@ -64,8 +64,8 @@ public class TargetSelector extends OptionSelector {
         this.flagEnemy    = flagEnemy;
         this.flagFriendly = flagFriendly;
         
-        targetOption = new Option("Target", 12, 250);
-        cancelOption = new Option("Cancel", 12, 200);
+        targetOption = new TextOption("Target", 12, 250);
+        cancelOption = new TextOption("Cancel", 12, 200);
         
         options.add(targetOption);
         options.add(cancelOption);

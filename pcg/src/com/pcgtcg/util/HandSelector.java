@@ -11,10 +11,10 @@ import com.pcgtcg.util.*;
 
 public class HandSelector extends OptionSelector {
 	
-	private Option summonOption;
-	private Option activateOption;
-	private Option setOption;
-	private Option cancelOption;
+	private TextOption summonOption;
+	private TextOption activateOption;
+	private TextOption setOption;
+	private TextOption cancelOption;
 	private Card card;
 	private Texture whiteTex;
 	
@@ -23,10 +23,10 @@ public class HandSelector extends OptionSelector {
 		super();
 		this.card = card;
 		
-		summonOption = new Option("Summon",12,300);
-		setOption = new Option("Set", 12, 250);
-		activateOption = new Option("Activate", 12, 200);
-		cancelOption = new Option("Cancel", 12, 150);
+		summonOption = new TextOption("Summon",12,300);
+		setOption = new TextOption("Set", 12, 250);
+		activateOption = new TextOption("Activate", 12, 200);
+		cancelOption = new TextOption("Cancel", 12, 150);
 		
 		options.add(summonOption);
 		options.add(setOption);
