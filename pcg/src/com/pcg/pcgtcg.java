@@ -37,7 +37,7 @@ public class pcgtcg implements ApplicationListener {
 	public static int gameState;
 	
 	// Configured options
-	public static String name = "Tester";
+	public static String name = "Player";
 	
 	public void create()
 	{	

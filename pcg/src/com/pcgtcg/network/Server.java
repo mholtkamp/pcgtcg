@@ -23,14 +23,21 @@ public class Server extends NetworkManager implements Runnable{
 	
 	public void run()
 	{
-		socketHints = new SocketHints();
-		socketHints.connectTimeout = 400000;
-		System.out.println("Connecting to this IP: " +  masterServerIP);
-		socket = Gdx.net.newClientSocket(Protocol.TCP, masterServerIP, 2000, socketHints);
-		
-		connected = true;
-        buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-		initialized = true;
+	    try
+	    {
+    		socketHints = new SocketHints();
+    		socketHints.connectTimeout = 400000;
+    		System.out.println("Connecting to this IP: " +  masterServerIP);
+    		socket = Gdx.net.newClientSocket(Protocol.TCP, masterServerIP, 2000, socketHints);
+    		
+    		connected = true;
+            buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+    		initialized = true;
+	    }
+	    catch (Exception ex)
+	    {
+	        
+	    }
 		
 		while(!finished)
 		{

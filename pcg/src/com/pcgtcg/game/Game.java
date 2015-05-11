@@ -24,6 +24,7 @@ import com.pcgtcg.util.TextOption;
 import com.pcgtcg.util.HistoryToast;
 import com.pcgtcg.util.TargetSelector;
 import com.pcgtcg.util.TributeSelector;
+import com.pcgtcg.network.LANServer;
 
 public class Game {
 
@@ -444,7 +445,8 @@ public class Game {
         rematchIntent = false;
         rematchRequest = false;
         
-        if (pcgtcg.netman instanceof Server)
+        if ((pcgtcg.netman instanceof Server) ||
+            (pcgtcg.netman instanceof LANServer))
         {
             player.deck.randomizeDeck();
             player.deck.setOwn(true);

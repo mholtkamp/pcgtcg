@@ -28,6 +28,8 @@ public class NetworkManager implements Runnable{
 	protected volatile boolean hasGameList;
 	protected volatile boolean initialized;
 	
+	public List<String> addresses;
+	
 	public NetworkManager()
 	{
 		buffer        = null;
@@ -38,6 +40,35 @@ public class NetworkManager implements Runnable{
 		inGame        = false;
 		hasGameList   = false;
 		initialized   = false;
+		
+		addresses = new ArrayList<String>();
+		
+        // BEGIN code borrowed from http://www.gamefromscratch.com/post/2014/03/11/LibGDX-Tutorial-10-Basic-networking.aspx
+        try
+        {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            for(NetworkInterface ni : Collections.list(interfaces)){
+                for(InetAddress address : Collections.list(ni.getInetAddresses()))
+                {
+                    if(address instanceof Inet4Address){
+                        addresses.add(address.getHostAddress());
+                    }
+                }
+            }
+        } 
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
+        
+        String ipAddress = new String("");
+        for(String str:addresses)
+        {
+            ipAddress = ipAddress + str + "\n";
+        }
+        //END borrowed Code
+
+        System.out.println(ipAddress);
+        
 	}
 	
 	public boolean isConnected()
