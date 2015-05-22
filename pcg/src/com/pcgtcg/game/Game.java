@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -119,6 +120,7 @@ public class Game {
 		rematchRequest = false;
 		
 		starFactory = new StarFactory();
+		starFactory.setCount(20);
 	}
 	
 	public Game(boolean isHost)
@@ -456,9 +458,11 @@ public class Game {
         if ((pcgtcg.netman instanceof Server) ||
             (pcgtcg.netman instanceof LANServer))
         {
-            player.deck.randomizeDeck();
+            FullDeck fdeck = new FullDeck();
+            fdeck.shuffle();
+            player.deck.dealDeck(fdeck);
             player.deck.setOwn(true);
-            eplayer.deck.randomizeDeck();
+            eplayer.deck.dealDeck(fdeck);
             eplayer.deck.setOwn(false);
             player.deck.setCardBoxes(true);
             eplayer.deck.setCardBoxes(false);
@@ -476,7 +480,8 @@ public class Game {
         {
             inGameState = ACCEPT_STATE;
         }
-	        
+        
+        updateStarFactory();
 	}
 	
 	public void addToast(String text)
@@ -488,6 +493,30 @@ public class Game {
         pcgtcg.netman.send("NOTIFY." + text);
 	}
 	
+	public void updateStarFactory()
+	{
+	    Color minColor = new Color();
+	    Color maxColor = new Color();
+	    
+	    starFactory.setCount(20 + (80 - eplayer.life - player.life));
+	    if (player.life > eplayer.life)
+	    {
+	        minColor.set(0.8f, 0.5f, 0.5f, 1.0f);
+	        maxColor.set(1.0f, 0.5f, 0.5f, 1.0f);
+	    }
+	    else if (eplayer.life > player.life)
+	    {
+	        minColor.set(0.5f, 0.5f, 0.8f, 1.0f);
+            maxColor.set(0.5f, 0.5f, 1.0f, 1.0f);
+	    }
+	    else
+	    {
+	        minColor.set(1.0f, 1.0f, 0.5f, 1.0f);
+	        maxColor.set(1.0f, 1.0f, 1.0f, 1.0f); 
+	    }
+	    
+	    starFactory.setColors(minColor, maxColor);
+	}
 	
 	//*************************************************
 	//*************     GAME ACTIONS    ***************
@@ -706,6 +735,7 @@ public class Game {
 			gameOver = true;
 		}
 		pcgtcg.netman.send("DAMAGE."+amount);
+		updateStarFactory();
 	}
 	
 	public void sdamage(int amount)
@@ -717,6 +747,7 @@ public class Game {
 			gameOver = true;
 		}
 		pcgtcg.netman.send("SDAMAGE."+amount);
+		updateStarFactory();
 	}
 	//*************************************************
 	//*************     NET ACTIONS     ***************
@@ -848,6 +879,7 @@ public class Game {
 			gameOver = true;
 			inGameState = GAME_OVER_STATE;
 		}
+		updateStarFactory();
 	}
 	
 	public void exeSDAMAGE(String param)
@@ -860,6 +892,7 @@ public class Game {
 			gameOver = true;
 			inGameState = GAME_OVER_STATE;
 		}
+		updateStarFactory();
 	}
 	
     public void exeDISCARD(String param)

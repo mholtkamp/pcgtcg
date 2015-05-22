@@ -106,6 +106,25 @@ public class StarFactory
     
     public void setCount(int newCount)
     {
+        // Do not exceed maximum
+        if (newCount > maxCount)
+            return;
+        
+        if (newCount > count)
+        {
+            for (int i = count; i < newCount; i++)
+            {
+                setStar(starList[i]);
+            }
+        }
+
         count = newCount;
+    }
+    
+    public void setColors(Color minColor, 
+                          Color maxColor)
+    {
+        this.minColor.set(minColor);
+        this.maxColor.set(maxColor);
     }
 }
