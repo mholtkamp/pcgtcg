@@ -20,6 +20,7 @@ import com.pcgtcg.util.AttackSelector;
 import com.pcgtcg.util.FieldSelector;
 import com.pcgtcg.util.HandSelector;
 import com.pcgtcg.util.HistoryQueue;
+import com.pcgtcg.util.StarFactory;
 import com.pcgtcg.util.TextOption;
 import com.pcgtcg.util.HistoryToast;
 import com.pcgtcg.util.TargetSelector;
@@ -78,6 +79,8 @@ public class Game {
 	public boolean rematchIntent;
 	public boolean rematchRequest;
 	
+	public StarFactory starFactory;
+	
 	public Game()
 	{
 		player  = new Player();
@@ -114,6 +117,8 @@ public class Game {
 		
 		rematchIntent  = false;
 		rematchRequest = false;
+		
+		starFactory = new StarFactory();
 	}
 	
 	public Game(boolean isHost)
@@ -149,9 +154,11 @@ public class Game {
 	public void update()
 	{
 	    // Update scrolling background
-	    scrollX += Gdx.graphics.getDeltaTime() * 20.0f;
-	    if (scrollX >= pcgtcg.SCREEN_WIDTH*2)
-	        scrollX -= pcgtcg.SCREEN_WIDTH*2;
+//	    scrollX += Gdx.graphics.getDeltaTime() * 20.0f;
+//	    if (scrollX >= pcgtcg.SCREEN_WIDTH*2)
+//	        scrollX -= pcgtcg.SCREEN_WIDTH*2;
+	    
+	    starFactory.update();
 	    
 	    // Update all animations
 	    animationQueue.update();
@@ -334,8 +341,9 @@ public class Game {
 	public void render(SpriteBatch batch)
 	{
 	    // Render Backgrounds
-	    batch.draw(scrollingBgTex, scrollX, 0);
-	    batch.draw(scrollingBgTex, scrollX - pcgtcg.SCREEN_WIDTH*2, 0);
+	    //batch.draw(scrollingBgTex, scrollX, 0);
+	    //batch.draw(scrollingBgTex, scrollX - pcgtcg.SCREEN_WIDTH*2, 0);
+	    starFactory.render(batch);
 	    batch.draw(staticBgTex, 0, 0);
 	    
 		//Render Locations

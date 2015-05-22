@@ -50,7 +50,7 @@ public class pcgtcg implements ApplicationListener {
 		menu = new Menu();
 		gameState = MENU_STATE;
 		
-		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1f);
+		Gdx.gl.glClearColor(0.04f, 0.04f, 0.12f, 1f);
 	}
 	
 	public void dispose() {
@@ -98,6 +98,7 @@ public class pcgtcg implements ApplicationListener {
 		manager.load("data/uparrow.png", Texture.class);
 		manager.load("data/p1color.png", Texture.class);
 		manager.load("data/p2color.png", Texture.class);
+		manager.load("data/star.png", Texture.class);
 		manager.update();
 		manager.finishLoading();
 		
@@ -113,7 +114,7 @@ public class pcgtcg implements ApplicationListener {
 	}
 	
 	public void render()
-	{
+	{ 
 		update();
 		batch.setProjectionMatrix(camera.combined);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
