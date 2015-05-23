@@ -35,13 +35,15 @@ public class Menu {
 	public static final int LIST_STATE    = 7;
 	public static final int JOIN_STATE    = 8;
 	public static final int LAN_CONNECT_STATE = 9;
-	public static final int LAN_HOST_STATE = 10;
+	public static final int LAN_HOST_STATE    = 10;
+	public static final int HOW_TO_PLAY_STATE = 11;
 	
 	private Button quitButton;
 	private Button hostButton;
 	private Button connectButton;
 	private Button connectLANButton;
 	private Button hostLANButton;
+	private Button howToPlayButton;
 	
 	private TextOption connectOption;
 	private TextOption cancelOption;
@@ -68,6 +70,8 @@ public class Menu {
 	
 	public String connectIP;
 	
+	private HowToPlay howToPlay;
+	
 	public Menu()
 	{
 		menuState = MAIN_STATE;
@@ -77,12 +81,15 @@ public class Menu {
 		quitButton       = new Button(345, 100, 105, 50);
 		connectLANButton = new Button(465,130,170,50);
 		hostLANButton    = new Button(465,70,170,50);
+		howToPlayButton  = new Button(480, 330, 190, 50);
+		
 		
 		quitButton.setText("Quit");
 		hostButton.setText("Host");
 		connectButton.setText("Connect");
         connectLANButton.setText("Connect");
         hostLANButton.setText("Host");
+        howToPlayButton.setText("How To Play");
 		
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		connectOption = new TextOption("Connect",200,320);
@@ -123,6 +130,8 @@ public class Menu {
 		hasSentLogin = false;
 		queuedState = -1;
 		connectIP = "";
+		
+		howToPlay = new HowToPlay();
 	}
 	
 	public void render(SpriteBatch batch)
@@ -134,6 +143,7 @@ public class Menu {
 			connectButton.render(batch);
 			connectLANButton.render(batch);
 			hostLANButton.render(batch);
+			howToPlayButton.render(batch);
 				
 			font.setScale(3f,3f);
 			font.setColor(1f,0.1f,0.1f,1f);
@@ -247,6 +257,10 @@ public class Menu {
             connectOption.render(batch);
             cancelOption.render(batch);
         }
+        else if(menuState == HOW_TO_PLAY_STATE)
+        {
+            howToPlay.render(batch);
+        }
 		
       if (fadeFlag)
         {
@@ -276,6 +290,7 @@ public class Menu {
 			connectButton.update();
 			connectLANButton.update();
 			hostLANButton.update();
+			howToPlayButton.update();
 			
 			if(quitButton.isActive())
 			{
@@ -326,6 +341,11 @@ public class Menu {
                 Gdx.input.setOnscreenKeyboardVisible(true);
                 Gdx.input.setInputProcessor(ipField);
                 connectLANButton.clear();
+                setFade();
+            }
+            else if(howToPlayButton.isActive())
+            {
+                menuState = HOW_TO_PLAY_STATE;
                 setFade();
             }
 		}
@@ -496,6 +516,10 @@ public class Menu {
                 pcgtcg.gameState = pcgtcg.GAME_STATE;
             }
         }
+        else if (menuState == HOW_TO_PLAY_STATE)
+        {
+            howToPlay.update();
+        }
 	}
 	
 	public void setFade()
@@ -549,9 +573,7 @@ public class Menu {
 	        {
 	            displayCards1[i].setBox(0,   (int) displayPos + i*150 - 8*150, 120, 150);
 	            displayCards2[i].setBox(680, (int) (pcgtcg.SCREEN_HEIGHT - (i+1)*150 - displayPos + 8*150), 120, 150);
-	        }
-	        
-	        
+	        }   
 	    }
 	}
 }

@@ -39,7 +39,7 @@ public class StarFactory
         maxSize = 32.0f;
         
         minSpin = 20.0f;
-        maxSpin = 180.0f;
+        maxSpin = 200.0f;
         
         minColor = new Color(1.0f, 1.0f, 0.5f, 1.0f);
         maxColor = new Color(1.0f, 1.0f, 1.0f, 1.0f); 

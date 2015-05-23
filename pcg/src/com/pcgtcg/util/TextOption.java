@@ -17,8 +17,8 @@ public class TextOption extends Option {
 	{
 	    super(x,y);
 		this.text = text;
-		validColor   = new Color(0.7f, 0.68f, 1f, 1f);
-		invalidColor = new Color(0.4f, 0.4f, 0.4f, 1f);
+		validColor   = new Color(0.518f, 0.890f, 0.451f, 1f);
+		invalidColor = new Color(0.2f, 0.2f, 0.2f, 1f);
 	}
 	
 	public void render(SpriteBatch batch)

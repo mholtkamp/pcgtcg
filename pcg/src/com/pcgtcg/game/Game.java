@@ -47,7 +47,7 @@ public class Game {
 	public Texture blackTex;
 	public BitmapFont font;
 	public Texture staticBgTex;
-	public Texture scrollingBgTex;
+	//public Texture scrollingBgTex;
 	private float scrollX = 0.0f;
 	
 	//Player + Locations
@@ -112,7 +112,7 @@ public class Game {
 		blackTex       = pcgtcg.manager.get("data/blackTex.png",Texture.class);
 		font           = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		staticBgTex    = pcgtcg.manager.get("data/staticbg.png", Texture.class);
-		scrollingBgTex = pcgtcg.manager.get("data/scrollingbg.png",Texture.class);
+		//scrollingBgTex = pcgtcg.manager.get("data/scrollingbg.png",Texture.class);
 		animationQueue = new AnimationQueue();
 		history        = new HistoryQueue();
 		
@@ -156,9 +156,9 @@ public class Game {
 	public void update()
 	{
 	    // Update scrolling background
-//	    scrollX += Gdx.graphics.getDeltaTime() * 20.0f;
-//	    if (scrollX >= pcgtcg.SCREEN_WIDTH*2)
-//	        scrollX -= pcgtcg.SCREEN_WIDTH*2;
+	    // scrollX += Gdx.graphics.getDeltaTime() * 20.0f;
+	    // if (scrollX >= pcgtcg.SCREEN_WIDTH*2)
+	    //    scrollX -= pcgtcg.SCREEN_WIDTH*2;
 	    
 	    starFactory.update();
 	    
@@ -501,13 +501,13 @@ public class Game {
 	    starFactory.setCount(20 + (80 - eplayer.life - player.life));
 	    if (player.life > eplayer.life)
 	    {
-	        minColor.set(0.8f, 0.5f, 0.5f, 1.0f);
-	        maxColor.set(1.0f, 0.5f, 0.5f, 1.0f);
+	        minColor.set(0.4f, 0.2f, 0.2f, 1.0f);
+	        maxColor.set(1.0f, 0.2f, 0.2f, 1.0f);
 	    }
 	    else if (eplayer.life > player.life)
 	    {
-	        minColor.set(0.5f, 0.5f, 0.8f, 1.0f);
-            maxColor.set(0.5f, 0.5f, 1.0f, 1.0f);
+	        minColor.set(0.2f, 0.2f, 0.4f, 1.0f);
+            maxColor.set(0.2f, 0.2f, 1.0f, 1.0f);
 	    }
 	    else
 	    {

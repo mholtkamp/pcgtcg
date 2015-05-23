@@ -50,7 +50,8 @@ public class pcgtcg implements ApplicationListener {
 		menu = new Menu();
 		gameState = MENU_STATE;
 		
-		Gdx.gl.glClearColor(0.04f, 0.04f, 0.12f, 1f);
+		//Gdx.gl.glClearColor(0.04f, 0.04f, 0.12f, 1f);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	
 	public void dispose() {
@@ -106,7 +107,6 @@ public class pcgtcg implements ApplicationListener {
 	
 	private void update()
 	{
-		
 		if(gameState == MENU_STATE)
 			menu.update();
 		else if(gameState == GAME_STATE)
@@ -117,6 +117,12 @@ public class pcgtcg implements ApplicationListener {
 	{ 
 		update();
 		batch.setProjectionMatrix(camera.combined);
+		
+		if (gameState == MENU_STATE)
+		    Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		else
+		    Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		
