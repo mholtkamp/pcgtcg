@@ -16,7 +16,7 @@ public class C9 extends Card {
 		hasActive = true;
 		
 		activeDescriptor = "Draw a card.";
-		passiveDescriptor = "Cannot be destroyed by battle.";
+		passiveDescriptor = "Cannot be destroyed by battle while in\nattack position.";
 	}
 
 	public void activate()

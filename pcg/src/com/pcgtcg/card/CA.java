@@ -16,7 +16,7 @@ public class CA extends Card {
 		tributeCost = 3;
 		hasActive = true;
 		
-		activeDescriptor = "Remove from game J/Q/K from your grave to \nspecial summon this card.";
+		activeDescriptor = "Remove from game J, Q, and K from your \ngrave to special summon this card.";
 		passiveDescriptor = "";
 	}
 

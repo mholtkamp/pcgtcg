@@ -76,12 +76,12 @@ public class Menu {
 	{
 		menuState = MAIN_STATE;
 		
-		connectButton    = new Button(160,130,170,50);
-		hostButton       = new Button(160,70,170,50);
-		quitButton       = new Button(345, 100, 105, 50);
-		connectLANButton = new Button(465,130,170,50);
-		hostLANButton    = new Button(465,70,170,50);
-		howToPlayButton  = new Button(480, 330, 190, 50);
+		connectButton    = new Button(160,100,170,50);
+		hostButton       = new Button(160,40,170,50);
+		quitButton       = new Button(345, 70, 105, 50);
+		connectLANButton = new Button(465,100,170,50);
+		hostLANButton    = new Button(465,40,170,50);
+		howToPlayButton  = new Button(530, 310, 120, 50);
 		
 		
 		quitButton.setText("Quit");
@@ -89,7 +89,7 @@ public class Menu {
 		connectButton.setText("Connect");
         connectLANButton.setText("Connect");
         hostLANButton.setText("Host");
-        howToPlayButton.setText("How To Play");
+        howToPlayButton.setText("Rules");
 		
 		font = pcgtcg.manager.get("data/eras.fnt",BitmapFont.class);
 		connectOption = new TextOption("Connect",200,320);
@@ -157,11 +157,11 @@ public class Menu {
 			
 			font.setColor(0.2f, 0.2f, 0.8f, 1f);
 			font.setScale(1f);
-			font.draw(batch, "Online", 190, 210);
+			font.draw(batch, "Online", 190, 180);
 			
 	        font.setColor(0.2f, 0.2f, 0.8f, 1f);
             font.setScale(1f);
-            font.draw(batch, "LAN", 515, 210);
+            font.draw(batch, "LAN", 515, 180);
 			
 			for (int i = 0; i < 8; i++)
 			{
@@ -346,6 +346,7 @@ public class Menu {
             else if(howToPlayButton.isActive())
             {
                 menuState = HOW_TO_PLAY_STATE;
+                howToPlayButton.clear();
                 setFade();
             }
 		}

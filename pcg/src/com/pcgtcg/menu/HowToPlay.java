@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.pcg.pcgtcg;
 import com.pcgtcg.card.*;
+import com.pcgtcg.util.TextOption;
 
 public class HowToPlay 
 {
@@ -27,7 +28,7 @@ public class HowToPlay
     private static Color h2color;
     
     private static float minOffset = 480.0f;
-    private static float maxOffset = 3000.0f;
+    private static float maxOffset = 5000.0f;
     
     private float downY;
     private boolean hasBeenTouched;
@@ -47,6 +48,8 @@ public class HowToPlay
     private static Texture tCQ;
     private static Texture tCK;
     private static Texture tCA;
+    
+    private TextOption backOption;
     
     public HowToPlay()
     {
@@ -75,6 +78,8 @@ public class HowToPlay
         tCQ = pcgtcg.manager.get("data/cardQTex.png", Texture.class);
         tCK = pcgtcg.manager.get("data/cardKTex.png", Texture.class);
         tCA = pcgtcg.manager.get("data/cardATex.png", Texture.class);
+        
+        backOption = new TextOption("Back", 650, 40);
     }
     
     public void render(SpriteBatch batch)
@@ -319,11 +324,85 @@ public class HowToPlay
         font.draw(batch,
                   "cards on the enemy field by 3.",
                   h3x + 80, offset - 2490);
-                  
         
+        batch.draw(tC4, h2x, offset - 2730);
+        font.draw(batch,
+                  "Passive: Gains 4 power when in defense position.",
+                  h3x, offset - 2600);
                   
-                  
+        batch.draw(tC5, h2x, offset - 2930);
+        font.draw(batch,
+                  "Active: Add +5 power to a summoned card on your field.",
+                  h3x, offset - 2800);
+        font.draw(batch,
+                  "Passive: Immune to enemy Q's active.",
+                  h3x, offset - 2830);
         
+        batch.draw(tC6, h2x, offset - 3130);
+        font.draw(batch,
+                  "Passive: Counts as two tributes.",
+                  h3x, offset - 3000);
+        
+        batch.draw(tC7, h2x, offset - 3330);
+        font.draw(batch,
+                  "(No Abilities)", 
+                  h3x, offset - 3200);
+                  
+        batch.draw(tC8, h2x, offset - 3530);
+        font.draw(batch,
+                  "Deal battle damage when attacking cards in defense mode.",
+                  h3x, offset - 3400);
+        
+        batch.draw(tC9, h2x, offset - 3730);
+        font.draw(batch,
+                  "Active: Draw a card.",
+                  h3x, offset - 3600);
+        font.draw(batch,
+                  "Passive: Cannot be destroyed by battle while in",
+                  h3x, offset - 3630);
+        font.draw(batch,
+                  "attack position.",
+                  h3x + 80, offset - 3660);
+        
+        batch.draw(tCT, h2x, offset - 3930);
+        font.draw(batch,
+                  "Active: Return a random card from your grave to your hand.",
+                  h3x, offset - 3800);
+        
+        batch.draw(tCJ, h2x, offset - 4130);
+        font.draw(batch,
+                  "Active: Retrieve a Q, 10, or 5 from your deck.",
+                  h3x, offset - 4000);
+        font.draw(batch,
+                  "Passive: Immune to enemy Q's active.",
+                  h3x, offset - 4030);
+        
+        batch.draw(tCQ, h2x, offset - 4330);
+        font.draw(batch,
+                  "Active: Send all cards on both players' fields to their",
+                  h3x, offset - 4200);
+        font.draw(batch,
+                  "respective graves.",
+                  h3x + 80, offset - 4230);
+        
+        batch.draw(tCK, h2x, offset - 4530);
+        font.draw(batch,
+                  "Active: If your life is less than the enemy's life, summon",
+                  h3x, offset - 4400);
+        font.draw(batch,
+                  "a Q or lower from your hand at 0 tribute cost.",
+                  h3x + 80, offset - 4430);
+        
+        batch.draw(tCA, h2x, offset - 4730);
+        font.draw(batch,
+                  "Active: Remove from game a J, Q, and K from your ",
+                  h3x, offset - 4600);
+        font.draw(batch,
+                  "grave to special summon this card.",
+                  h3x + 80, offset - 4630);
+        
+        backOption.render(batch);
+                  
     }
     
     public void update()
@@ -334,6 +413,12 @@ public class HowToPlay
             pcgtcg.camera.unproject(touchPos);
             downY = touchPos.y;
             hasBeenTouched = true;
+            
+            if (backOption.isTouched(touchPos.x, touchPos.y))
+            {
+                pcgtcg.menu.menuState = pcgtcg.menu.MAIN_STATE;
+                pcgtcg.menu.setFade();
+            }
         }
         else if (Gdx.input.isTouched() && hasBeenTouched)
         {
